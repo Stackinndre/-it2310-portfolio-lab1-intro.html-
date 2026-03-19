@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 8 - Interactive Button</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    button {
+      font-size: 20px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #secondButton {
+      background-color: #2196F3;
+      margin-top: 15px;
+    }
+    #secondButton:hover {
+      background-color: #1976D2;
+    }
+    #greetingParagraph {
+      font-size: 22px;
+      font-weight: bold;
+      color: #333;
+      margin-top: 20px;
+      min-height: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <script>
+    // PART 1: Output your name using document.write
+    document.write("<p>Created by: Andre Donerson</p>");
+  </script>
+
+  <h1>Welcome to My Page</h1>
+  <button id="nameButton">Click Me!</button>
+  <br>
+  <button id="secondButton">What Time Is It?</button>
+
+  <!-- Bonus: Greeting appears in a paragraph instead of only the button -->
+  <p id="greetingParagraph"></p>
+
+  <script>
+    // PART 2: Select the button using its ID
+    const button = document.getElementById("nameButton");
+    const secondButton = document.getElementById("secondButton");
+    const greetingParagraph = document.getElementById("greetingParagraph");
+
+    // PART 3: Add a click event listener to the main button
+    button.addEventListener("click", () => {
+      // Prompt the user to enter their name
+      const user = prompt("What is your name?");
+
+      if (user) {
+        // Bonus: Change button background color when clicked
+        button.style.backgroundColor = "#9C27B0";
+        button.style.setProperty("--hover-color", "#7B1FA2");
+
+        // Bonus: Update button text
+        button.textContent = `Hello, ${user}!`;
+
+        // Bonus: Show greeting in a new paragraph instead of just the button
+        greetingParagraph.textContent = `Welcome to the page, ${user}! Glad you're here.`;
+      } else {
+        // Reset everything if cancelled
+        button.textContent = "Click Me!";
+        button.style.backgroundColor = "#4CAF50";
+        greetingParagraph.textContent = "";
+      }
+    });
+
+    // Bonus: Second button that does something different
+    secondButton.addEventListener("click", () => {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString();
+      alert(`The current time is: ${timeString}`);
+    });
+  </script>
+
+</body>
+</html>
