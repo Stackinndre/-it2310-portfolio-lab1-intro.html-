@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Andre Donerson — IT2310 Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+/* ══════════════════════════════════════════
+   RESET & TOKENS  (Capital T World palette)
+══════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0a0e17;
+  --surface:rgba(255,255,255,0.04);
+  --border:rgba(255,255,255,0.10);
+  --red:#ff3232;
+  --red2:#ff6b6b;
+  --white:#fff;
+  --off:rgba(255,255,255,0.85);
+  --muted:rgba(255,255,255,0.55);
+  --dim:rgba(255,255,255,0.28);
+  --display:'Bebas Neue',sans-serif;
+  --body:'Inter',-apple-system,sans-serif;
+}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--white);
+  font-family:var(--body);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none;}
+button{background:none;border:none;cursor:pointer;color:inherit;font-family:var(--body);}
+
+/* ══════════════════════════════════════════
+   LOADER  (matches Capital T World exactly)
+══════════════════════════════════════════ */
+#loader{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .5s ease .2s, visibility .5s ease .2s;
+}
+#loader.hidden{opacity:0;visibility:hidden;pointer-events:none;}
+.loader-logo{
+  display:flex;align-items:center;justify-content:center;
+  gap:.4rem;
+  margin-bottom:2rem;
+  font-family:var(--display);
+  font-size:clamp(3rem,10vw,5.5rem);
+  letter-spacing:.06em;
+}
+.loader-logo .lw{color:var(--white);}
+.loader-logo .lr{color:var(--red);}
+.loader-track{
+  width:min(80vw,24rem);
+  height:4px;
+  background:rgba(255,255,255,.18);
+  border-radius:999px;
+  overflow:hidden;
+  position:relative;
+  margin-bottom:.75rem;
+}
+.loader-fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--red),var(--red2));
+  border-radius:999px;
+  transition:width .12s linear;
+  position:relative;
+}
+.loader-sparkle{
+  position:absolute;
+  top:0;width:12px;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);
+  box-shadow:0 0 8px rgba(255,255,255,.8),0 0 16px rgba(255,50,50,.6);
+  filter:blur(.5px);
+  left:0%;
+  transform:translateX(-50%);
+  animation:sparkle-move 1.2s linear infinite;
+}
+@keyframes sparkle-move{
+  0%{left:0%}100%{left:100%}
+}
+.loader-pct{
+  font-size:.82rem;font-weight:500;
+  color:var(--muted);
+  text-align:center;
+  letter-spacing:.05em;
+}
+
+/* ══════════════════════════════════════════
+   FIXED HEADER  (Capital T World)
+══════════════════════════════════════════ */
+#site-header{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  background:rgba(10,14,23,.55);
+}
+.header-inner{
+  display:flex;align-items:center;
+  padding:.9rem 1.5rem;
+  position:relative;
+}
+.menu-btn{
+  position:absolute;left:1.5rem;
+  font-size:1.06rem;font-weight:500;
+  letter-spacing:.06em;
+  color:var(--white);
+  transition:color .2s;
+  font-family:var(--body);
+}
+.menu-btn:hover{color:var(--red);}
+.header-logo{
+  flex:1;text-align:center;
+  font-family:var(--display);
+  font-size:1.6rem;letter-spacing:.1em;
+  cursor:pointer;
+}
+.header-logo .hl-w{color:var(--white);}
+.header-logo .hl-r{color:var(--red);}
+
+/* ══════════════════════════════════════════
+   NAV OVERLAY
+══════════════════════════════════════════ */
+.nav-overlay{
+  position:fixed;inset:0;z-index:600;
+  background:rgba(0,0,0,.85);
+  backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;
+  transition:opacity .3s,visibility .3s;
+}
+.nav-overlay.open{opacity:1;visibility:visible;}
+.nav-panel{position:relative;text-align:center;}
+.nav-close{
+  position:absolute;top:-3rem;right:0;
+  font-size:1.4rem;color:var(--muted);
+  transition:color .2s;padding:.5rem;
+}
+.nav-close:hover{color:var(--white);}
+.nav-links{
+  display:flex;flex-direction:column;gap:1.4rem;
+}
+.nav-links a{
+  font-family:var(--display);
+  font-size:clamp(2rem,5vw,3rem);
+  letter-spacing:.12em;
+  color:var(--muted);
+  transition:color .2s;
+}
+.nav-links a:hover{color:var(--white);}
+
+/* ══════════════════════════════════════════
+   DARK OVERLAY  (behind content, above bg)
+══════════════════════════════════════════ */
+.dark-overlay{
+  position:fixed;inset:0;z-index:1;
+  background:rgba(0,0,0,.62);
+  pointer-events:none;
+}
+
+/* ══════════════════════════════════════════
+   MAIN
+══════════════════════════════════════════ */
+#main{
+  position:relative;z-index:2;
+  padding-top:5.5rem;
+}
+.section-inner{
+  max-width:72rem;
+  margin:0 auto;
+  padding:5rem 1.5rem;
+}
+.section-label{
+  font-size:.72rem;font-weight:600;letter-spacing:.18em;
+  color:var(--red);text-transform:uppercase;
+  margin-bottom:.75rem;
+}
+.section-title{
+  font-family:var(--display);
+  font-size:clamp(2.6rem,6vw,4rem);
+  letter-spacing:.08em;
+  line-height:1;
+  margin-bottom:2.5rem;
+}
+.section-title .red{color:var(--red);}
+
+/* ══════════════════════════════════════════
+   HERO
+══════════════════════════════════════════ */
+#hero{
+  position:relative;
+  min-height:100vh;
+  display:flex;align-items:center;
+  overflow:hidden;
+}
+#canvas-intro{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  z-index:0;
+}
+.hero-content{
+  position:relative;z-index:2;
+  max-width:72rem;
+  margin:0 auto;
+  padding:5rem 1.5rem;
+  width:100%;
+}
+.hero-badge{
+  display:inline-block;
+  font-size:.72rem;font-weight:600;letter-spacing:.18em;
+  text-transform:uppercase;
+  padding:.35rem .9rem;
+  border:1px solid var(--border);
+  border-radius:999px;
+  color:var(--muted);
+  margin-bottom:1.5rem;
+}
+.hero-title{
+  font-family:var(--display);
+  font-size:clamp(4rem,12vw,8rem);
+  letter-spacing:.06em;
+  line-height:.95;
+  margin-bottom:1.25rem;
+}
+.hero-title .red{color:var(--red);}
+.hero-sub{
+  font-size:1.05rem;font-weight:500;
+  color:var(--muted);
+  letter-spacing:.05em;
+  margin-bottom:1rem;
+  text-transform:uppercase;
+}
+.hero-desc{
+  font-size:.95rem;line-height:1.7;
+  color:var(--off);
+  max-width:46rem;
+  margin-bottom:2rem;
+}
+.hero-btns{display:flex;gap:.85rem;flex-wrap:wrap;}
+.btn-primary{
+  display:inline-flex;align-items:center;
+  padding:.72rem 2rem;
+  background:var(--red);
+  font-size:.88rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  border-radius:4px;
+  transition:opacity .2s;
+}
+.btn-primary:hover{opacity:.85;}
+.btn-outline{
+  display:inline-flex;align-items:center;
+  padding:.72rem 2rem;
+  border:1px solid var(--border);
+  font-size:.88rem;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;
+  border-radius:4px;
+  transition:background .2s,border-color .2s;
+}
+.btn-outline:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.25);}
+
+/* ══════════════════════════════════════════
+   DIVIDER
+══════════════════════════════════════════ */
+.sec-divider{
+  border:none;
+  border-top:1px solid var(--border);
+  max-width:72rem;margin:0 auto;
+}
+
+/* ══════════════════════════════════════════
+   SKILLS
+══════════════════════════════════════════ */
+.chips-grid{
+  display:flex;flex-wrap:wrap;gap:.55rem;
+}
+.chip{
+  font-size:.75rem;font-weight:600;font-family:monospace;
+  padding:.35rem .85rem;
+  border-radius:3px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--off);
+  transition:border-color .2s,color .2s;
+}
+.chip:hover{border-color:rgba(255,255,255,.28);color:var(--white);}
+.chip.red{border-color:rgba(255,50,50,.35);color:rgba(255,100,100,.9);}
+.chip.accent{border-color:rgba(100,180,255,.3);color:rgba(130,200,255,.9);}
+
+/* ══════════════════════════════════════════
+   EXPERIENCE
+══════════════════════════════════════════ */
+.exp-list{
+  display:flex;flex-direction:column;gap:1rem;
+}
+.exp-card{
+  padding:1.4rem 1.5rem;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-left:3px solid var(--red);
+  border-radius:4px;
+  transition:background .2s;
+}
+.exp-card:hover{background:rgba(255,255,255,.06);}
+.exp-co{
+  font-size:.72rem;font-weight:600;font-family:monospace;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(130,200,255,.85);
+  margin-bottom:.3rem;
+}
+.exp-role{
+  font-size:1.1rem;font-weight:700;
+  margin-bottom:.25rem;
+}
+.exp-detail{
+  font-size:.82rem;color:var(--muted);line-height:1.6;
+}
+
+/* ══════════════════════════════════════════
+   PROJECTS
+══════════════════════════════════════════ */
+.proj-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:1rem;
+}
+.proj-card{
+  padding:1.4rem;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:4px;
+  transition:background .2s,border-color .2s;
+}
+.proj-card:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.18);}
+.proj-num{
+  font-size:.65rem;font-weight:700;font-family:monospace;
+  letter-spacing:.15em;
+  color:rgba(130,200,255,.85);
+  margin-bottom:.55rem;
+}
+.proj-name{font-size:1rem;font-weight:700;margin-bottom:.35rem;}
+.proj-impact{font-size:.8rem;color:var(--muted);line-height:1.55;}
+
+/* ══════════════════════════════════════════
+   EDUCATION
+══════════════════════════════════════════ */
+.edu-card{
+  padding:1.6rem;
+  background:var(--surface);
+  border:1px solid rgba(201,168,76,.25);
+  border-radius:4px;
+  margin-bottom:1.25rem;
+}
+.edu-label{
+  font-size:.65rem;font-weight:700;font-family:monospace;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:#c9a84c;margin-bottom:.35rem;
+}
+.edu-name{font-size:1.1rem;font-weight:700;margin-bottom:.2rem;}
+.edu-school{font-size:.82rem;color:var(--muted);}
+.certs-row{
+  display:flex;flex-wrap:wrap;gap:.55rem;
+  margin-top:1.4rem;
+}
+.cert-badge{
+  font-size:.75rem;font-weight:600;
+  padding:.35rem .85rem;
+  border:1px solid var(--border);
+  background:var(--surface);
+  border-radius:3px;
+}
+
+/* ══════════════════════════════════════════
+   LABS GRID
+══════════════════════════════════════════ */
+.labs-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:1rem;
+}
+.lab-card{
+  position:relative;
+  padding:1.5rem;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:4px;
+  transition:background .2s,border-color .2s;
+  overflow:hidden;
+}
+.lab-card:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.18);}
+.lab-card-top{
+  display:flex;align-items:flex-start;
+  justify-content:space-between;
+  margin-bottom:1rem;
+}
+.lab-num{
+  font-size:.65rem;font-weight:700;font-family:monospace;
+  letter-spacing:.15em;text-transform:uppercase;
+  padding:.3rem .75rem;
+  background:var(--red);
+  color:var(--white);
+  border-radius:3px;
+}
+.lab-num.bonus{background:rgba(255,215,0,.85);color:#000;}
+.lab-num.portfolio{background:rgba(100,180,255,.8);color:#000;}
+.lab-open{
+  font-size:.75rem;font-weight:700;
+  padding:.3rem .85rem;
+  border:1px solid var(--border);
+  border-radius:3px;
+  color:var(--white);
+  transition:background .2s;
+  white-space:nowrap;
+}
+.lab-open:hover{background:rgba(255,255,255,.1);}
+.lab-title{font-size:1rem;font-weight:700;margin-bottom:.3rem;}
+.lab-desc{font-size:.82rem;color:var(--muted);line-height:1.6;margin-bottom:.9rem;}
+.lab-chips{display:flex;flex-wrap:wrap;gap:.4rem;}
+.lab-chip{
+  font-size:.66rem;font-weight:600;font-family:monospace;
+  padding:.25rem .6rem;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  border-radius:2px;
+  color:rgba(130,200,255,.85);
+}
+/* SVG mockup inside lab card */
+.lab-mockup{
+  margin-bottom:1rem;
+  border-radius:6px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.07);
+  line-height:0;
+}
+.lab-mockup svg{width:100%;display:block;}
+/* decorative bg letter for cards without mockup */
+.lab-bg-art{
+  position:absolute;right:-10px;top:50%;transform:translateY(-50%);
+  font-family:var(--display);
+  font-size:7rem;letter-spacing:.05em;
+  color:rgba(255,255,255,.04);
+  pointer-events:none;
+  line-height:1;
+  user-select:none;
+}
+
+/* ══════════════════════════════════════════
+   CONTACT
+══════════════════════════════════════════ */
+.contact-list{
+  display:flex;flex-direction:column;gap:.75rem;
+  max-width:42rem;
+  margin-bottom:2.5rem;
+}
+.contact-item{
+  display:flex;align-items:center;gap:.9rem;
+  padding:.9rem 1.2rem;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:4px;
+  font-size:.9rem;
+  transition:background .2s;
+}
+.contact-item:hover{background:rgba(255,255,255,.07);}
+.c-ico{font-size:1rem;width:22px;text-align:center;flex-shrink:0;}
+
+/* ══════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════ */
+footer{
+  border-top:1px solid var(--border);
+  padding:2rem 1.5rem;
+  text-align:center;
+  font-size:.75rem;
+  color:var(--dim);
+  letter-spacing:.05em;
+  position:relative;z-index:2;
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media(max-width:600px){
+  .hero-btns{flex-direction:column;}
+  .proj-grid{grid-template-columns:1fr;}
+  .labs-grid{grid-template-columns:1fr;}
+}
+
+/* ══════════════════════════════════════════
+   REVEAL ANIMATION
+══════════════════════════════════════════ */
+.reveal{
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity .55s ease,transform .55s ease;
+}
+.reveal.visible{opacity:1;transform:none;}
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ LOADER ═══════════════ -->
+<div id="loader">
+  <div style="text-align:center;">
+    <div class="loader-logo">
+      <span class="lw">ANDRE </span><span class="lr">DONERSON</span>
+    </div>
+    <div class="loader-track">
+      <div class="loader-fill" id="loader-fill">
+        <div class="loader-sparkle"></div>
+      </div>
+    </div>
+    <div class="loader-pct" id="loader-pct">Loading… 0%</div>
+  </div>
+</div>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<header id="site-header">
+  <div class="header-inner">
+    <button class="menu-btn" id="menu-btn">MENU</button>
+    <div class="header-logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+      <span class="hl-w">ANDRE </span><span class="hl-r">DONERSON</span><span class="hl-w">.DEV</span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════ NAV OVERLAY ═══════════════ -->
+<div class="nav-overlay" id="nav-overlay">
+  <div class="nav-panel">
+    <button class="nav-close" id="nav-close">✕</button>
+    <nav class="nav-links">
+      <a href="#hero"       onclick="closeNav()">Home</a>
+      <a href="#skills"     onclick="closeNav()">Skills</a>
+      <a href="#experience" onclick="closeNav()">Experience</a>
+      <a href="#projects"   onclick="closeNav()">Projects</a>
+      <a href="#education"  onclick="closeNav()">Education</a>
+      <a href="#labs"       onclick="closeNav()">Labs</a>
+      <a href="#contact"    onclick="closeNav()">Contact</a>
+    </nav>
+  </div>
+</div>
+
+<!-- dark overlay sitting behind all sections -->
+<div class="dark-overlay"></div>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<main id="main">
+
+  <!-- ══════ 01 · HERO ══════ -->
+  <section id="hero">
+    <canvas id="canvas-intro"></canvas>
+    <div class="hero-content">
+      <div class="hero-badge reveal">IT2310 Portfolio · Cuyahoga Community College · 2026</div>
+      <h1 class="hero-title reveal">ANDRE<br><span class="red">DONERSON</span></h1>
+      <p class="hero-sub reveal">Senior AI Architect · LLMs · RAG · MLOps · AI Governance</p>
+      <p class="hero-desc reveal">
+        Building the next generation of intelligent systems. 10 years turning ideas into
+        production-grade AI. Currently completing an A.A.S. in Information Technology at
+        Cuyahoga Community College, Cleveland OH. Open to new opportunities in 2026.
+      </p>
+      <div class="hero-btns reveal">
+        <a href="#labs" class="btn-primary">View Labs</a>
+        <a href="#contact" class="btn-outline">Get in Touch</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="sec-divider">
+
+  <!-- ══════ 02 · SKILLS ══════ -->
+  <section id="skills">
+    <div class="section-inner">
+      <div class="section-label reveal">02 / Skills</div>
+      <h2 class="section-title reveal">TECH <span class="red">STACK</span></h2>
+      <div class="chips-grid reveal">
+        <span class="chip accent">GPT-4 / o1</span>
+        <span class="chip accent">Claude 3.5</span>
+        <span class="chip">LangChain</span>
+        <span class="chip">LlamaIndex</span>
+        <span class="chip red">RAG Pipelines</span>
+        <span class="chip">Fine-Tuning</span>
+        <span class="chip">RLHF</span>
+        <span class="chip accent">Prompt Engineering</span>
+        <span class="chip">Pinecone</span>
+        <span class="chip">Weaviate</span>
+        <span class="chip red">Kubernetes</span>
+        <span class="chip">MLflow</span>
+        <span class="chip">Kubeflow</span>
+        <span class="chip accent">Apache Airflow</span>
+        <span class="chip">Terraform</span>
+        <span class="chip red">AWS SageMaker</span>
+        <span class="chip accent">GCP Vertex AI</span>
+        <span class="chip">Azure OpenAI</span>
+        <span class="chip red">PyTorch</span>
+        <span class="chip">TensorFlow</span>
+        <span class="chip accent">HuggingFace</span>
+        <span class="chip">FastAPI</span>
+        <span class="chip">Docker</span>
+        <span class="chip">Python</span>
+        <span class="chip red">NIST AI RMF</span>
+        <span class="chip">SHAP / LIME</span>
+        <!-- Web skills -->
+        <span class="chip accent">HTML5</span>
+        <span class="chip accent">CSS3</span>
+        <span class="chip accent">JavaScript</span>
+        <span class="chip">Responsive Design</span>
+        <span class="chip">Flexbox / Grid</span>
+        <span class="chip">DOM Manipulation</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="sec-divider">
+
+  <!-- ══════ 03 · EXPERIENCE ══════ -->
+  <section id="experience">
+    <div class="section-inner">
+      <div class="section-label reveal">03 / Experience</div>
+      <h2 class="section-title reveal">CAREER <span class="red">ARC</span></h2>
+      <div class="exp-list">
+
+        <div class="exp-card reveal">
+          <div class="exp-co">NovaSystems AI · 2022 — Present</div>
+          <div class="exp-role">Senior AI Architect</div>
+          <div class="exp-detail">
+            Led enterprise RAG platform serving 3,000+ users across 12 business units.
+            Built AI governance framework reducing compliance review from 6 weeks to 4 days.
+            Achieved $180K/yr GPU cost savings through model optimization and batching strategies.
+          </div>
+        </div>
+
+        <div class="exp-card reveal">
+          <div class="exp-co">DataDriven Inc. · 2019 — 2022</div>
+          <div class="exp-role">Senior ML Engineer</div>
+          <div class="exp-detail">
+            Designed real-time fraud detection engine processing 50K transactions/sec at 99.4% precision.
+            Prevented $4.2M in annual losses. Built NLP pipeline for customer support automation —
+            reduced ticket volume by 41%.
+          </div>
+        </div>
+
+        <div class="exp-card reveal">
+          <div class="exp-co">CloudSys Solutions · 2015 — 2019</div>
+          <div class="exp-role">Software Engineer → ML Engineer</div>
+          <div class="exp-detail">
+            Built scalable ETL pipelines processing 800GB/day. Developed demand forecasting models
+            cutting inventory waste by 23%. Modernized legacy REST APIs, reducing response times by 67%.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="sec-divider">
+
+  <!-- ══════ 04 · PROJECTS ══════ -->
+  <section id="projects">
+    <div class="section-inner">
+      <div class="section-label reveal">04 / Projects</div>
+      <h2 class="section-title reveal">KEY <span class="red">PROJECTS</span></h2>
+      <div class="proj-grid">
+
+        <div class="proj-card reveal">
+          <div class="proj-num">01 · Enterprise RAG</div>
+          <div class="proj-name">Multi-Tenant RAG Knowledge Platform</div>
+          <div class="proj-impact">65% reduction in research time · 2M+ docs/day · 3K+ users · Azure OpenAI + Pinecone + LangChain</div>
+        </div>
+
+        <div class="proj-card reveal">
+          <div class="proj-num">02 · Real-Time ML</div>
+          <div class="proj-name">Fraud Detection Engine</div>
+          <div class="proj-impact">$4.2M prevented · 99.4% precision · 50K TPS · PyTorch + Kafka + Kubernetes</div>
+        </div>
+
+        <div class="proj-card reveal">
+          <div class="proj-num">03 · LLM Fine-Tuning</div>
+          <div class="proj-name">Domain-Specific LLM Pipeline</div>
+          <div class="proj-impact">40% reduction in hallucinations · QLoRA + DPO · deployed on GCP Vertex AI</div>
+        </div>
+
+        <div class="proj-card reveal">
+          <div class="proj-num">04 · AI Governance</div>
+          <div class="proj-name">Enterprise Governance Framework</div>
+          <div class="proj-impact">12 teams governed · 6 weeks → 4 days review cycle · NIST AI RMF aligned</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="sec-divider">
+
+  <!-- ══════ 05 · EDUCATION ══════ -->
+  <section id="education">
+    <div class="section-inner">
+      <div class="section-label reveal">05 / Education</div>
+      <h2 class="section-title reveal">EDUCATION &amp; <span class="red">CERTS</span></h2>
+
+      <div class="edu-card reveal">
+        <div class="edu-label">Degree</div>
+        <div class="edu-name">A.A.S. in Information Technology</div>
+        <div class="edu-school">Cuyahoga Community College (Tri-C) · Cleveland, OH · Expected May 2026</div>
+      </div>
+
+      <div class="section-label reveal" style="margin-bottom:.75rem;">Certifications</div>
+      <div class="certs-row reveal">
+        <span class="cert-badge">☁️ AWS ML Specialty</span>
+        <span class="cert-badge">🧠 GCP Professional ML Engineer</span>
+        <span class="cert-badge">🔷 Azure AI Engineer Associate</span>
+        <span class="cert-badge">📘 Deep Learning Specialization</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="sec-divider">
+
+  <!-- ══════ 06 · LABS ══════ -->
+  <section id="labs">
+    <div class="section-inner">
+      <div class="section-label reveal">06 / Labs</div>
+      <h2 class="section-title reveal">IT2310 <span class="red">LABS</span></h2>
+      <p class="reveal" style="color:var(--muted);font-size:.9rem;margin-bottom:2.2rem;max-width:46rem;">
+        All coursework from IT2310 Web Programming at Cuyahoga Community College, 2025–2026.
+        Click any card to open the live lab.
+      </p>
+
+      <div class="labs-grid">
+
+        <!-- Lab 01 -->
+        <div class="lab-card reveal">
+          <div class="lab-card-top">
+            <span class="lab-num">Lab 01</span>
+            <a href="lab1-intro.html" target="_blank" class="lab-open">Open Lab ↗</a>
+          </div>
+          <div class="lab-mockup">
+            <svg viewBox="0 0 480 280" xmlns="http://www.w3.org/2000/svg">
+              <defs><clipPath id="c1"><rect width="480" height="280" rx="8"/></clipPath></defs>
+              <g clip-path="url(#c1)">
+                <rect width="480" height="28" fill="#dde1e7"/>
+                <circle cx="14" cy="14" r="5" fill="#ff5f57"/><circle cx="30" cy="14" r="5" fill="#febc2e"/><circle cx="46" cy="14" r="5" fill="#28c840"/>
+                <rect x="64" y="7" width="240" height="14" rx="7" fill="white"/>
+                <text x="74" y="18" fill="#aaa" font-size="8" font-family="monospace">lab1-intro.html</text>
+                <rect y="28" width="480" height="252" fill="#ffffff"/>
+                <text x="24" y="60" fill="#1a1a1a" font-size="18" font-weight="bold" font-family="Georgia,serif">My First Web Page</text>
+                <line x1="24" y1="67" x2="456" y2="67" stroke="#e0e0e0" stroke-width="1.5"/>
+                <text x="24" y="84" fill="#555" font-size="9" font-family="Arial,sans-serif">Welcome to my website! This page was created using HTML5 for IT2310.</text>
+                <text x="24" y="97" fill="#555" font-size="9" font-family="Arial,sans-serif">I'm learning how the building blocks of the web come together.</text>
+                <text x="24" y="118" fill="#1a1a1a" font-size="13" font-weight="bold" font-family="Georgia,serif">About Me</text>
+                <circle cx="32" cy="134" r="2.5" fill="#555"/>
+                <text x="40" y="138" fill="#555" font-size="9" font-family="Arial,sans-serif">Name: Andre Donerson</text>
+                <circle cx="32" cy="150" r="2.5" fill="#555"/>
+                <text x="40" y="154" fill="#555" font-size="9" font-family="Arial,sans-serif">School: Cuyahoga Community College (Tri-C)</text>
+                <circle cx="32" cy="166" r="2.5" fill="#555"/>
+                <text x="40" y="170" fill="#555" font-size="9" font-family="Arial,sans-serif">Course: IT2310 Web Programming</text>
+                <text x="24" y="195" fill="#1a73e8" font-size="9" font-family="Arial,sans-serif">→ Visit my GitHub profile</text>
+                <rect x="320" y="78" width="100" height="72" rx="5" fill="#f4f4f4" stroke="#ddd" stroke-width="1"/>
+                <text x="370" y="120" fill="#bbb" font-size="9" font-family="Arial,sans-serif" text-anchor="middle">[ img ]</text>
+                <text x="24" y="228" fill="#aaa" font-size="7.5" font-family="Arial,sans-serif">© 2025 Andre Donerson · IT2310</text>
+              </g>
+            </svg>
+          </div>
+          <div class="lab-title">My First Web Page</div>
+          <div class="lab-desc">Every web dev career starts somewhere. Headings, paragraphs, links, images — the building blocks of the browser.</div>
+          <div class="lab-chips">
+            <span class="lab-chip">HTML5</span>
+            <span class="lab-chip">Document Structure</span>
+            <span class="lab-chip">Semantic Elements</span>
+          </div>
+        </div>
+
+        <!-- Lab 02 -->
+        <div class="lab-card reveal">
+          <div class="lab-card-top">
+            <span class="lab-num">Lab 02</span>
+            <a href="lab2-home.html" target="_blank" class="lab-open">Open Lab ↗</a>
+          </div>
+          <div class="lab-mockup">
+            <svg viewBox="0 0 480 280" xmlns="http://www.w3.org/2000/svg">
+              <defs><clipPath id="c2"><rect width="480" height="280" rx="8"/></clipPath></defs>
+              <g clip-path="url(#c2)">
+                <rect width="480" height="28" fill="#dde1e7"/>
+                <circle cx="14" cy="14" r="5" fill="#ff5f57"/><circle cx="30" cy="14" r="5" fill="#febc2e"/><circle cx="46" cy="14" r="5" fill="#28c840"/>
+                <rect x="64" y="7" width="240" height="14" rx="7" fill="white"/>
+                <text x="74" y="18" fill="#aaa" font-size="8" font-family="monospace">lab2-home.html</text>
+                <rect y="28" width="480" height="252" fill="#f5f5f5"/>
+                <rect y="28" width="480" height="34" fill="#2c3e50"/>
+                <text x="16" y="50" fill="white" font-size="10" font-weight="bold" font-family="Arial,sans-serif">IT2310</text>
+                <text x="100" y="50" fill="#ecf0f1" font-size="9" font-family="Arial,sans-serif">Home</text>
+                <text x="148" y="50" fill="#bdc3c7" font-size="9" font-family="Arial,sans-serif">About</text>
+                <text x="196" y="50" fill="#bdc3c7" font-size="9" font-family="Arial,sans-serif">Contact</text>
+                <rect y="62" width="480" height="218" fill="white"/>
+                <text x="24" y="88" fill="#2c3e50" font-size="14" font-weight="bold" font-family="Georgia,serif">Student Schedule</text>
+                <line x1="24" y1="94" x2="456" y2="94" stroke="#e0e0e0" stroke-width="1"/>
+                <rect x="24" y="102" width="432" height="20" fill="#2c3e50"/>
+                <text x="34" y="116" fill="white" font-size="8.5" font-weight="bold" font-family="Arial,sans-serif">Course</text>
+                <text x="140" y="116" fill="white" font-size="8.5" font-weight="bold" font-family="Arial,sans-serif">Days</text>
+                <text x="228" y="116" fill="white" font-size="8.5" font-weight="bold" font-family="Arial,sans-serif">Time</text>
+                <text x="330" y="116" fill="white" font-size="8.5" font-weight="bold" font-family="Arial,sans-serif">Room</text>
+                <rect x="24" y="122" width="432" height="18" fill="#f8f9fa"/>
+                <text x="34" y="134" fill="#555" font-size="8" font-family="Arial,sans-serif">IT2310 Web Programming</text>
+                <text x="140" y="134" fill="#555" font-size="8" font-family="Arial,sans-serif">Mon/Wed</text>
+                <text x="228" y="134" fill="#555" font-size="8" font-family="Arial,sans-serif">9:00 AM</text>
+                <text x="330" y="134" fill="#555" font-size="8" font-family="Arial,sans-serif">CS-102</text>
+                <rect x="24" y="140" width="432" height="18" fill="white"/>
+                <text x="34" y="152" fill="#555" font-size="8" font-family="Arial,sans-serif">IT1010 Networking</text>
+                <text x="140" y="152" fill="#555" font-size="8" font-family="Arial,sans-serif">Tue/Thu</text>
+                <text x="228" y="152" fill="#555" font-size="8" font-family="Arial,sans-serif">11:00 AM</text>
+                <text x="330" y="152" fill="#555" font-size="8" font-family="Arial,sans-serif">NET-201</text>
+                <rect x="24" y="158" width="432" height="18" fill="#f8f9fa"/>
+                <text x="34" y="170" fill="#555" font-size="8" font-family="Arial,sans-serif">MAT1210 Calculus</text>
+                <text x="140" y="170" fill="#555" font-size="8" font-family="Arial,sans-serif">Mon/Wed/Fri</text>
+                <text x="228" y="170" fill="#555" font-size="8" font-family="Arial,sans-serif">1:00 PM</text>
+                <text x="330" y="170" fill="#555" font-size="8" font-family="Arial,sans-serif">MATH-105</text>
+                <rect x="24" y="102" width="432" height="74" fill="none" stroke="#dee2e6" stroke-width="1"/>
+              </g>
+            </svg>
+          </div>
+          <div class="lab-title">Navigation &amp; Tables</div>
+          <div class="lab-desc">Multi-page site with a working nav bar and HTML data tables — the foundation of every dashboard I'd later build.</div>
+          <div class="lab-chips">
+            <span class="lab-chip">HTML Navigation</span>
+            <span class="lab-chip">HTML Tables</span>
+            <span class="lab-chip">Multi-Page Sites</span>
+          </div>
+        </div>
+
+        <!-- Lab 03 -->
+        <div class="lab-card reveal">
+          <div class="lab-card-top">
+            <span class="lab-num">Lab 03</span>
+            <a href="lab3-forms.html" target="_blank" class="lab-open">Open Lab ↗</a>
+          </div>
+          <div class="lab-mockup">
+            <svg viewBox="0 0 480 280" xmlns="http://www.w3.org/2000/svg">
+              <defs><clipPath id="c3"><rect width="480" height="280" rx="8"/></clipPath></defs>
+              <g clip-path="url(#c3)">
+                <rect width="480" height="28" fill="#dde1e7"/>
+                <circle cx="14" cy="14" r="5" fill="#ff5f57"/><circle cx="30" cy="14" r="5" fill="#febc2e"/><circle cx="46" cy="14" r="5" fill="#28c840"/>
+                <rect x="64" y="7" width="240" height="14" rx="7" fill="white"/>
+                <text x="74" y="18" fill="#aaa" font-size="8" font-family="monospace">lab3-forms.html</text>
+                <rect y="28" width="480" height="252" fill="#fdf6ed"/>
+                <rect y="28" width="480" height="36" fill="#6f4e37"/>
+                <text x="240" y="51" fill="white" font-size="13" font-weight="bold" font-family="Georgia,serif" text-anchor="middle">☕ Coffee Order Form</text>
+                <rect x="56" y="72" width="368" height="200" rx="7" fill="white" stroke="#e8d5b7" stroke-width="1.5"/>
+                <text x="74" y="93" fill="#5d4037" font-size="8.5" font-weight="bold" font-family="Arial,sans-serif">Your Name:</text>
+                <rect x="74" y="97" width="170" height="14" rx="3" fill="#f9f9f9" stroke="#ccc" stroke-width="1"/>
+                <text x="80" y="108" fill="#bbb" font-size="7.5" font-family="Arial,sans-serif">Enter your name...</text>
+                <text x="74" y="128" fill="#5d4037" font-size="8.5" font-weight="bold" font-family="Arial,sans-serif">Cup Size:</text>
+                <circle cx="80" cy="139" r="4" fill="none" stroke="#6f4e37" stroke-width="1.5"/>
+                <circle cx="80" cy="139" r="1.8" fill="#6f4e37"/>
+                <text x="88" y="143" fill="#555" font-size="8" font-family="Arial,sans-serif">Small</text>
+                <circle cx="124" cy="139" r="4" fill="none" stroke="#bbb" stroke-width="1.5"/>
+                <text x="132" y="143" fill="#555" font-size="8" font-family="Arial,sans-serif">Medium</text>
+                <circle cx="176" cy="139" r="4" fill="none" stroke="#bbb" stroke-width="1.5"/>
+                <text x="184" y="143" fill="#555" font-size="8" font-family="Arial,sans-serif">Large</text>
+                <text x="74" y="162" fill="#5d4037" font-size="8.5" font-weight="bold" font-family="Arial,sans-serif">Roast:</text>
+                <rect x="74" y="166" width="130" height="14" rx="3" fill="#f9f9f9" stroke="#ccc" stroke-width="1"/>
+                <text x="80" y="177" fill="#777" font-size="7.5" font-family="Arial,sans-serif">Medium Roast ▾</text>
+                <text x="74" y="197" fill="#5d4037" font-size="8.5" font-weight="bold" font-family="Arial,sans-serif">Add-ons:</text>
+                <rect x="74" y="202" width="9" height="9" rx="2" fill="#6f4e37"/>
+                <text x="87" y="210" fill="#555" font-size="8" font-family="Arial,sans-serif">✓ Extra Shot</text>
+                <rect x="146" y="202" width="9" height="9" rx="2" fill="none" stroke="#ccc" stroke-width="1"/>
+                <text x="159" y="210" fill="#555" font-size="8" font-family="Arial,sans-serif">Oat Milk</text>
+                <rect x="74" y="215" width="9" height="9" rx="2" fill="#6f4e37"/>
+                <text x="87" y="223" fill="#555" font-size="8" font-family="Arial,sans-serif">✓ Whipped Cream</text>
+                <rect x="74" y="238" width="110" height="22" rx="5" fill="#6f4e37"/>
+                <text x="129" y="253" fill="white" font-size="9" font-weight="bold" font-family="Arial,sans-serif" text-anchor="middle">Place Order</text>
+              </g>
+            </svg>
+          </div>
+          <div class="lab-title">Coffee Order Form</div>
+          <div class="lab-desc">Full form with dropdowns, checkboxes, radio buttons — understanding how users give data to your systems.</div>
+          <div class="lab-chips">
+            <span class="lab-chip">HTML Forms</span>
+            <span class="lab-chip">Input Types</span>
+            <span class="lab-chip">UX Design</span>
+          </div>
+        </div>
+
+        <!-- Lab 04 -->
+        <div class="lab-card reveal">
+          <div class="lab-card-top">
+            <span class="lab-num">Lab 04</span>
+            <a href="lab4.html" target="_blank" class="lab-open">Open Lab ↗</a>
+          </div>
+          <div class="lab-bg-art">CSS</div>
+          <div class="lab-title">CSS Fundamentals</div>
+          <div class="lab-desc">Colors, fonts, selectors, specificity — linked an external stylesheet and watched plain HTML transform into something beautiful.</div>
+          <div class="lab-chips">
+            <span class="lab-chip">CSS Fundamentals</span>
+            <span class="lab-chip">Selectors</span>
+            <span class="lab-chip">Color Theory</span>
+            <span class="lab-chip">Typography</span>
+            <span class="lab-chip">External Stylesheet</span>
+          </div>
+        </div>
+
+        <!-- Lab 05 -->
+        <div class="lab-card reveal">
+          <div class="lab-card-top">
+            <span class="lab-num">Lab 05</span>
+            <a href="lab5-text.html" target="_blank" class="lab-open">Open Lab ↗</a>
+          </div>
+          <div class="lab-bg-art">Aa</div>
+          <div class="lab-title">Typography &amp; Text Styling</div>
+          <div class="lab-desc">Fonts, sizes, weights, line-height, letter-spacing. Type is the #1 design element on the web. Master this and everything looks better.</div>
+          <div class="lab-chips">
+            <span class="lab-chip">Typography</span>
+            <span class="lab-chip">Font Properties</span>
+            <span class="lab-chip">Text Styling</span>
+            <span class="lab-chip">Line Height</span>
+          </div>
+        </div>
+
+        <!-- Lab 06 -->
+        <div class="lab-card reveal">
+          <div class="lab-card-top">
+            <span class="lab-num">Lab 06</span>
+            <a href="lab6-boxmodel.html" target="_blank" class="lab-open">Open Lab ↗</a>
+          </div>
+          <div class="lab-bg-art">□□</div>
+          <div class="lab-title">CSS Box Model</div>
+          <div class="lab-desc">Content → Padding → Border → Margin. Once this clicked, every layout problem became solvable. The most important concept in CSS.</div>
+          <div class="lab-chips">
+            <span class="lab-chip">Box Model</span>
+            <span class="lab-chip">Margin / Padding</span>
+            <span class="lab-chip">Border</span>
+            <span class="lab-chip">CSS Layout</span>
+          </div>
+        </div>
+
+        <!-- Lab 07 -->
+        <div class="lab-card reveal">
+          <div class="lab-card-top">
+            <span class="lab-num">Lab 07</span>
+            <a href="lab7-coffee.html" target="_blank" class="lab-open">Open Lab ↗</a>
+          </div>
+          <div class="lab-bg-art">☕</div>
+          <div class="lab-title">Coffee Shop Website</div>
+          <div class="lab-desc">Combined everything: HTML structure, CSS styling, flexbox layout, responsive design, and branding. This is where it all came together.</div>
+          <div class="lab-chips">
+            <span class="lab-chip">Full Website</span>
+            <span class="lab-chip">CSS Flexbox</span>
+            <span class="lab-chip">Responsive Design</span>
+            <span class="lab-chip">Branding</span>
+          </div>
+        </div>
+
+        <!-- Lab 08 -->
+        <div class="lab-card reveal">
+          <div class="lab-card-top">
+            <span class="lab-num">Lab 08</span>
+            <a href="lab8-javascript.html" target="_blank" class="lab-open">Open Lab ↗</a>
+          </div>
+          <div class="lab-bg-art">JS</div>
+          <div class="lab-title">JavaScript</div>
+          <div class="lab-desc">DOM manipulation, event listeners, functions — the pages finally talk back. This was the gateway to everything: front-end to ML pipelines to full AI systems.</div>
+          <div class="lab-chips">
+            <span class="lab-chip">JavaScript</span>
+            <span class="lab-chip">DOM Manipulation</span>
+            <span class="lab-chip">Event Listeners</span>
+            <span class="lab-chip">Functions</span>
+          </div>
+        </div>
+
+        <!-- Lab 08 Bonus -->
+        <div class="lab-card reveal">
+          <div class="lab-card-top">
+            <span class="lab-num bonus">Bonus Lab</span>
+            <a href="lab8-javascript_bonus.html" target="_blank" class="lab-open">Open Lab ↗</a>
+          </div>
+          <div class="lab-bg-art" style="color:rgba(255,215,0,.06);">JS+</div>
+          <div class="lab-title">Advanced JavaScript — Bonus</div>
+          <div class="lab-desc">Went above and beyond — advanced JavaScript with arrays, loops, conditionals and dynamic content generation. Always do the bonus. Always go further.</div>
+          <div class="lab-chips">
+            <span class="lab-chip">Advanced JS</span>
+            <span class="lab-chip">Arrays</span>
+            <span class="lab-chip">Loops</span>
+            <span class="lab-chip">Conditionals</span>
+          </div>
+        </div>
+
+        <!-- About Page -->
+        <div class="lab-card reveal">
+          <div class="lab-card-top">
+            <span class="lab-num portfolio">Portfolio</span>
+            <a href="about.html" target="_blank" class="lab-open">View Page ↗</a>
+          </div>
+          <div class="lab-bg-art" style="color:rgba(100,180,255,.05);">Bio</div>
+          <div class="lab-title">About Page</div>
+          <div class="lab-desc">My full bio, education background, and contact info — built with clean HTML/CSS as part of the IT2310 portfolio project.</div>
+          <div class="lab-chips">
+            <span class="lab-chip">Bio</span>
+            <span class="lab-chip">Education</span>
+            <span class="lab-chip">Contact Info</span>
+            <span class="lab-chip">HTML + CSS</span>
+          </div>
+        </div>
+
+        <!-- Portfolio Gallery -->
+        <div class="lab-card reveal">
+          <div class="lab-card-top">
+            <span class="lab-num portfolio">Portfolio</span>
+            <a href="portfolio.html" target="_blank" class="lab-open">View All ↗</a>
+          </div>
+          <div class="lab-bg-art" style="color:rgba(100,180,255,.05);">Labs</div>
+          <div class="lab-title">Portfolio Gallery</div>
+          <div class="lab-desc">All IT2310 labs in one filterable view — HTML, CSS, JavaScript categories with live filter buttons. Click to see everything built this semester.</div>
+          <div class="lab-chips">
+            <span class="lab-chip">All Labs</span>
+            <span class="lab-chip">JS Filter</span>
+            <span class="lab-chip">Gallery View</span>
+          </div>
+        </div>
+
+      </div><!-- /labs-grid -->
+    </div>
+  </section>
+
+  <hr class="sec-divider">
+
+  <!-- ══════ 07 · CONTACT ══════ -->
+  <section id="contact">
+    <div class="section-inner">
+      <div class="section-label reveal">07 / Contact</div>
+      <h2 class="section-title reveal">LET'S <span class="red">CONNECT</span></h2>
+      <p class="reveal" style="color:var(--muted);font-size:.9rem;margin-bottom:1.75rem;max-width:38rem;">
+        Open to Senior AI Architect roles, Principal ML Engineer, and Generative AI consulting
+        opportunities in 2026. Cleveland, OH — open to remote.
+      </p>
+      <div class="contact-list">
+        <a href="mailto:andredonerson32@gmail.com" class="contact-item reveal">
+          <span class="c-ico">✉</span>andredonerson32@gmail.com
+        </a>
+        <a href="tel:2162782046" class="contact-item reveal">
+          <span class="c-ico">📞</span>(216) 278-2046
+        </a>
+        <a href="https://github.com/andredonerson" target="_blank" class="contact-item reveal">
+          <span class="c-ico">⌥</span>github.com/andredonerson
+        </a>
+        <a href="https://linkedin.com/in/andredonerson" target="_blank" class="contact-item reveal">
+          <span class="c-ico">in</span>linkedin.com/in/andredonerson
+        </a>
+        <div class="contact-item reveal">
+          <span class="c-ico">📍</span>Cleveland, OH · Open to Remote
+        </div>
+      </div>
+      <div class="hero-btns reveal">
+        <a href="mailto:andredonerson32@gmail.com" class="btn-primary">Send Email</a>
+        <a href="contact.html" class="btn-outline">Contact Form</a>
+      </div>
+    </div>
+  </section>
+
+</main><!-- /main -->
+
+<footer>
+  About · Privacy · Terms &nbsp;·&nbsp; © 2026 Andredonerson.dev
+</footer>
+
+<!-- ═══════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════ -->
+<script>
+/* ── LOADER ── */
+(function(){
+  const fill  = document.getElementById('loader-fill');
+  const pct   = document.getElementById('loader-pct');
+  const loader = document.getElementById('loader');
+  let p = 0;
+  const iv = setInterval(()=>{
+    p += Math.random() * 14 + 4;
+    if(p >= 100){ p = 100; clearInterval(iv); }
+    fill.style.width = p + '%';
+    pct.textContent  = 'Loading… ' + Math.round(p) + '%';
+    if(p === 100){
+      setTimeout(()=>{ loader.classList.add('hidden'); }, 350);
+    }
+  }, 80);
+})();
+
+/* ── MENU / NAV ── */
+const menuBtn  = document.getElementById('menu-btn');
+const navOver  = document.getElementById('nav-overlay');
+const navClose = document.getElementById('nav-close');
+function openNav(){ navOver.classList.add('open'); }
+function closeNav(){ navOver.classList.remove('open'); }
+menuBtn.addEventListener('click', openNav);
+navClose.addEventListener('click', closeNav);
+navOver.addEventListener('click', e=>{ if(e.target===navOver) closeNav(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeNav(); });
+
+/* ── SCROLL REVEAL ── */
+(function(){
+  const els = document.querySelectorAll('.reveal');
+  const io  = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); }});
+  },{threshold:0.12});
+  els.forEach(el=>io.observe(el));
+})();
+
+/* ── NEURAL NETWORK CANVAS (hero) ── */
+(function(){
+  const c = document.getElementById('canvas-intro');
+  if(!c) return;
+  const ctx = c.getContext('2d');
+  const N=90, D=130;
+  let W,H,nodes=[];
+  const M={x:-9e9,y:-9e9};
+
+  function resize(){ W=c.width=c.offsetWidth; H=c.height=c.offsetHeight; }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function Node(){
+    this.x=Math.random()*W; this.y=Math.random()*H;
+    this.vx=(Math.random()-.5)*.3; this.vy=(Math.random()-.5)*.3;
+    this.r=Math.random()*1.6+.6;
+  }
+  Node.prototype.update=function(){
+    this.x+=this.vx; this.y+=this.vy;
+    if(this.x<0||this.x>W) this.vx*=-1;
+    if(this.y<0||this.y>H) this.vy*=-1;
+    const dx=this.x-M.x, dy=this.y-M.y, d=Math.hypot(dx,dy);
+    if(d<80){ this.x+=dx/d; this.y+=dy/d; }
+  };
+
+  for(let i=0;i<N;i++) nodes.push(new Node());
+
+  c.addEventListener('mousemove', e=>{
+    const r=c.getBoundingClientRect();
+    M.x=e.clientX-r.left; M.y=e.clientY-r.top;
+  });
+  c.addEventListener('mouseleave',()=>{ M.x=-9e9; M.y=-9e9; });
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=0;i<nodes.length;i++){
+      nodes[i].update();
+      for(let j=i+1;j<nodes.length;j++){
+        const dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y;
+        const d=Math.hypot(dx,dy);
+        if(d<D){
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x,nodes[i].y);
+          ctx.lineTo(nodes[j].x,nodes[j].y);
+          const a=(1-d/D)*0.28;
+          ctx.strokeStyle=`rgba(255,50,50,${a})`;
+          ctx.lineWidth=.7;
+          ctx.stroke();
+        }
+      }
+      ctx.beginPath();
+      ctx.arc(nodes[i].x,nodes[i].y,nodes[i].r,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,80,80,0.55)';
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+
+</body>
+</html>
