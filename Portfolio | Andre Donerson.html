@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio | Andre Donerson</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ===================== SCROLL PROGRESS ===================== -->
+  <div id="scroll-progress"></div>
+
+  <!-- ===================== OVERSCROLL COVERS ===================== -->
+  <div class="overscroll-cover overscroll-cover-top"    aria-hidden="true"></div>
+  <div class="overscroll-cover overscroll-cover-bottom" aria-hidden="true"></div>
+
+  <!-- ===================== LOADER ===================== -->
+  <div id="loader" aria-hidden="true">
+    <div class="loader-name">
+      <span class="lc lc-first" style="--i:0">A</span>
+      <span class="lc lc-first" style="--i:1">N</span>
+      <span class="lc lc-first" style="--i:2">D</span>
+      <span class="lc lc-first" style="--i:3">R</span>
+      <span class="lc lc-first" style="--i:4">E</span>
+      <span class="lc-space" aria-hidden="true"></span>
+      <span class="lc lc-last" style="--i:6">D</span>
+      <span class="lc lc-last" style="--i:7">O</span>
+      <span class="lc lc-last" style="--i:8">N</span>
+      <span class="lc lc-last" style="--i:9">E</span>
+      <span class="lc lc-last" style="--i:10">R</span>
+      <span class="lc lc-last" style="--i:11">S</span>
+      <span class="lc lc-last" style="--i:12">O</span>
+      <span class="lc lc-last" style="--i:13">N</span>
+    </div>
+    <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+    <span class="loader-sub">Loading Portfolio...</span>
+  </div>
+
+  <!-- ===================== NAVIGATION ===================== -->
+  <nav class="navbar">
+    <div class="container">
+      <a class="nav-logo" href="index.html">Andre<span>.</span>dev</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html"><span class="nav-lbl"><span class="t1">Home</span><span class="t2" aria-hidden="true">Home</span></span></a></li>
+        <li><a href="about.html"><span class="nav-lbl"><span class="t1">About</span><span class="t2" aria-hidden="true">About</span></span></a></li>
+        <li><a href="portfolio.html"><span class="nav-lbl"><span class="t1">Portfolio</span><span class="t2" aria-hidden="true">Portfolio</span></span></a></li>
+        <li><a href="contact.html"><span class="nav-lbl"><span class="t1">Contact</span><span class="t2" aria-hidden="true">Contact</span></span></a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===================== PAGE HERO ===================== -->
+  <div class="page-hero">
+    <div class="container">
+      <h1>My Portfolio</h1>
+      <p>
+        Coursework, labs, and projects — all the work that's shaping my
+        skills as a web developer. Use the filters below to explore by technology.
+      </p>
+    </div>
+  </div>
+
+  <!-- ===================== PORTFOLIO GRID ===================== -->
+  <section>
+    <div class="container">
+
+      <!-- Filter Buttons -->
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All Projects</button>
+        <button class="filter-btn" data-filter="html">HTML</button>
+        <button class="filter-btn" data-filter="css">CSS</button>
+        <button class="filter-btn" data-filter="js">HTML + CSS + JS</button>
+      </div>
+
+      <!-- Discography Grid -->
+      <div class="disco-grid">
+
+        <!-- Lab 1: First HTML Page -->
+        <div class="disco-card reveal" data-category="html">
+          <a href="lab1-intro.html" target="_blank" rel="noopener" class="disco-art card-bg-html">
+            <span class="disco-emoji">&#128196;</span>
+            <div class="disco-overlay">
+              <span class="disco-play">View &rarr;</span>
+            </div>
+          </a>
+          <div class="disco-meta">
+            <div class="disco-tags"><span class="badge badge-html">HTML</span></div>
+            <h3 class="disco-title">Lab 1 — First HTML Page</h3>
+            <p class="disco-desc">Fundamental page structure using headings, paragraphs, anchor tags, and embedded images.</p>
+          </div>
+        </div>
+
+        <!-- Lab 2: Navigation & Tables -->
+        <div class="disco-card reveal reveal-delay-1" data-category="html">
+          <a href="lab2-home.html" target="_blank" rel="noopener" class="disco-art card-bg-html">
+            <span class="disco-emoji">&#128279;</span>
+            <div class="disco-overlay">
+              <span class="disco-play">View &rarr;</span>
+            </div>
+          </a>
+          <div class="disco-meta">
+            <div class="disco-tags"><span class="badge badge-html">HTML</span></div>
+            <h3 class="disco-title">Lab 2 — Navigation &amp; Tables</h3>
+            <p class="disco-desc">Two-page site with anchor links, semantic HTML tables, and scope attributes for accessibility.</p>
+          </div>
+        </div>
+
+        <!-- Lab 3: Coffee Order Form -->
+        <div class="disco-card reveal reveal-delay-2" data-category="html">
+          <a href="lab3-forms.html" target="_blank" rel="noopener" class="disco-art card-bg-html">
+            <span class="disco-emoji">&#9749;</span>
+            <div class="disco-overlay">
+              <span class="disco-play">View &rarr;</span>
+            </div>
+          </a>
+          <div class="disco-meta">
+            <div class="disco-tags"><span class="badge badge-html">HTML</span></div>
+            <h3 class="disco-title">Lab 3 — Coffee Order Form</h3>
+            <p class="disco-desc">Complete HTML form with text inputs, dropdowns, radio buttons, checkboxes, and paired labels.</p>
+          </div>
+        </div>
+
+        <!-- Lab 4: CSS Fundamentals -->
+        <div class="disco-card reveal reveal-delay-3" data-category="css">
+          <a href="lab4.html" target="_blank" rel="noopener" class="disco-art card-bg-css">
+            <span class="disco-emoji">&#127912;</span>
+            <div class="disco-overlay">
+              <span class="disco-play">View &rarr;</span>
+            </div>
+          </a>
+          <div class="disco-meta">
+            <div class="disco-tags"><span class="badge badge-css">CSS</span></div>
+            <h3 class="disco-title">Lab 4 — CSS Fundamentals</h3>
+            <p class="disco-desc">External stylesheet covering selectors, background colors, padding, list styling, and hover states.</p>
+          </div>
+        </div>
+
+        <!-- Lab 5: Typography -->
+        <div class="disco-card reveal" data-category="css">
+          <a href="lab5-text.html" target="_blank" rel="noopener" class="disco-art card-bg-css">
+            <span class="disco-emoji">&#9998;</span>
+            <div class="disco-overlay">
+              <span class="disco-play">View &rarr;</span>
+            </div>
+          </a>
+          <div class="disco-meta">
+            <div class="disco-tags"><span class="badge badge-css">CSS</span></div>
+            <h3 class="disco-title">Lab 5 — Text &amp; Typography</h3>
+            <p class="disco-desc">Full range of CSS text properties: font-family, size, weight, transform, shadow, and line-height.</p>
+          </div>
+        </div>
+
+        <!-- Lab 6: Box Model -->
+        <div class="disco-card reveal reveal-delay-1" data-category="css">
+          <a href="lab6-boxmodel.html" target="_blank" rel="noopener" class="disco-art card-bg-css">
+            <span class="disco-emoji">&#128230;</span>
+            <div class="disco-overlay">
+              <span class="disco-play">View &rarr;</span>
+            </div>
+          </a>
+          <div class="disco-meta">
+            <div class="disco-tags"><span class="badge badge-css">CSS</span></div>
+            <h3 class="disco-title">Lab 6 — CSS Box Model</h3>
+            <p class="disco-desc">Four layers of the box model — content, padding, border, margin — with content-box vs border-box demo.</p>
+          </div>
+        </div>
+
+        <!-- Lab 7: Coffee Shop -->
+        <div class="disco-card reveal reveal-delay-2" data-category="js">
+          <a href="lab7-coffee.html" target="_blank" rel="noopener" class="disco-art card-bg-multi">
+            <span class="disco-emoji">&#9749;</span>
+            <div class="disco-overlay">
+              <span class="disco-play">View &rarr;</span>
+            </div>
+          </a>
+          <div class="disco-meta">
+            <div class="disco-tags">
+              <span class="badge badge-html">HTML</span>
+              <span class="badge badge-css">CSS</span>
+              <span class="badge badge-js">JS</span>
+            </div>
+            <h3 class="disco-title">Lab 7 — Java Haven Coffee Shop</h3>
+            <p class="disco-desc">Multi-section coffee shop site with JavaScript modals, dynamic cart, and interactive menu ordering.</p>
+          </div>
+        </div>
+
+        <!-- Lab 8: JavaScript Interactive -->
+        <div class="disco-card reveal reveal-delay-3" data-category="js">
+          <a href="lab8-javascript.html" target="_blank" rel="noopener" class="disco-art card-bg-multi">
+            <span class="disco-emoji">&#9889;</span>
+            <div class="disco-overlay">
+              <span class="disco-play">View &rarr;</span>
+            </div>
+          </a>
+          <div class="disco-meta">
+            <div class="disco-tags">
+              <span class="badge badge-html">HTML</span>
+              <span class="badge badge-css">CSS</span>
+              <span class="badge badge-js">JS</span>
+            </div>
+            <h3 class="disco-title">Lab 8 — Interactive JavaScript</h3>
+            <p class="disco-desc">DOM manipulation and event handling: interactive button behaviors demonstrating core JavaScript fundamentals.</p>
+          </div>
+        </div>
+
+        <!-- Portfolio Site -->
+        <div class="disco-card reveal reveal-delay-2" data-category="js">
+          <a href="index.html" class="disco-art card-bg-multi">
+            <span class="disco-emoji">&#128188;</span>
+            <div class="disco-overlay">
+              <span class="disco-play">View &rarr;</span>
+            </div>
+          </a>
+          <div class="disco-meta">
+            <div class="disco-tags">
+              <span class="badge badge-html">HTML</span>
+              <span class="badge badge-css">CSS</span>
+              <span class="badge badge-js">JS</span>
+            </div>
+            <h3 class="disco-title">Professional Portfolio Site</h3>
+            <p class="disco-desc">Four-page capstone site with mobile nav, typewriter animation, scroll-reveal, skill bars, and form validation.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer>
+    <p>&copy; 2026 <strong>Andre Donerson</strong> &mdash; Built with HTML, CSS &amp; JavaScript</p>
+  </footer>
+
+  <!-- BACK TO TOP -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
+
+  <script src="js/main.js"></script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>
