@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<title>ANDRE.EXE — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
+:root {
+  --red:    #ff3232; --red2:   #ff6b6b;
+  --yellow: #ffd60a; --cyan:   #00f5ff;
+  --green:  #39ff14; --purple: #bf5af2;
+  --white:  #fff;
+  --muted:  rgba(255,255,255,0.55);
+  --dim:    rgba(255,255,255,0.25);
+  --pixel:  'Press Start 2P', monospace;
+  --mono:   'Space Mono', monospace;
+  --body:   'Inter', sans-serif;
+}
+
+/* ═══════════════════════════════════════
+   RESET
+═══════════════════════════════════════ */
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html,body { width:100%; height:100%; overflow:hidden; }
+body { font-family:var(--body); background:#020408; color:var(--white); cursor:none; -webkit-font-smoothing:antialiased; }
+a { color:inherit; text-decoration:none; }
+button { background:none; border:none; cursor:none; color:inherit; font-family:inherit; }
+
+/* ═══════════════════════════════════════
+   CURSOR
+═══════════════════════════════════════ */
+#cursor {
+  position:fixed; width:8px; height:8px; background:var(--yellow);
+  border-radius:50%; pointer-events:none; z-index:99999;
+  transform:translate(-50%,-50%); mix-blend-mode:difference;
+}
+#cursor-ring {
+  position:fixed; width:28px; height:28px;
+  border:1.5px solid rgba(255,214,10,0.6); border-radius:50%;
+  pointer-events:none; z-index:99998; transform:translate(-50%,-50%);
+  transition:width .12s,height .12s,border-color .12s;
+}
+body.hovering #cursor-ring { width:44px; height:44px; border-color:rgba(255,214,10,0.9); }
+@media (hover:none) { #cursor,#cursor-ring { display:none; } }
+
+/* ═══════════════════════════════════════
+   BOOT SCREEN
+═══════════════════════════════════════ */
+#boot {
+  position:fixed; inset:0; background:#000;
+  display:flex; flex-direction:column; justify-content:center; align-items:flex-start;
+  padding:2rem 3rem; z-index:9000; transition:opacity .6s,visibility .6s;
+}
+#boot.done { opacity:0; visibility:hidden; pointer-events:none; }
+.boot-line { font-family:var(--mono); font-size:.75rem; color:var(--green); opacity:0; animation:b-in .01s forwards; line-height:2; }
+.boot-line.w { color:var(--white); } .boot-line.y { color:var(--yellow); }
+@keyframes b-in { to { opacity:1; } }
+#boot-caret { display:inline-block; width:9px; height:1.1em; background:var(--green); animation:blink .7s step-end infinite; }
+@keyframes blink { 50% { opacity:0; } }
+
+/* ═══════════════════════════════════════
+   GAME VIEWPORT  (Riley: .fun-viewport)
+═══════════════════════════════════════ */
+#game-scene {
+  width:100vw; height:100vh; position:relative; overflow:hidden;
+  opacity:0; transition:opacity .5s;
+}
+#game-scene.on { opacity:1; }
+
+/* ═══════════════════════════════════════
+   BACKGROUND LAYERS  (Riley: bg-sky / bg-stone / bg-grass)
+═══════════════════════════════════════ */
+.bg-sky {
+  position:absolute; inset:0; height:62%;
+  background:linear-gradient(180deg,#020916 0%,#050f24 45%,#0d1f3c 100%);
+  z-index:0;
+}
+/* Star field */
+.bg-sky::before {
+  content:''; position:absolute; inset:0;
+  background:
+    radial-gradient(1.5px 1.5px at  8% 12%,rgba(255,255,255,.9) 0%,transparent 100%),
+    radial-gradient(1px   1px   at 20%  6%,rgba(255,255,255,.7) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 35% 20%,rgba(255,255,255,.8) 0%,transparent 100%),
+    radial-gradient(1px   1px   at 48%  4%,rgba(255,255,255,.6) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 62% 10%,rgba(255,255,255,.9) 0%,transparent 100%),
+    radial-gradient(1px   1px   at 75% 23%,rgba(255,255,255,.7) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 88%  8%,rgba(255,255,255,.85)0%,transparent 100%),
+    radial-gradient(1px   1px   at 15% 38%,rgba(255,255,255,.5) 0%,transparent 100%),
+    radial-gradient(1px   1px   at 55% 30%,rgba(255,255,255,.6) 0%,transparent 100%),
+    radial-gradient(1.5px 1.5px at 90% 42%,rgba(255,255,255,.7) 0%,transparent 100%),
+    radial-gradient(1px   1px   at 30% 52%,rgba(255,255,255,.4) 0%,transparent 100%),
+    radial-gradient(1px   1px   at 70% 47%,rgba(255,255,255,.5) 0%,transparent 100%),
+    radial-gradient(1px   1px   at 40% 26%,rgba(255,214,10,.5)  0%,transparent 100%),
+    radial-gradient(1px   1px   at  5% 58%,rgba(255,255,255,.35)0%,transparent 100%),
+    radial-gradient(1px   1px   at 95% 18%,rgba(255,255,255,.5) 0%,transparent 100%),
+    radial-gradient(1px   1px   at 52% 55%,rgba(0,245,255,.4)   0%,transparent 100%);
+}
+/* City silhouette */
+.bg-city {
+  position:absolute; bottom:38%; left:0; right:0; height:18%; z-index:1;
+  background:linear-gradient(to top,#050810 0%,transparent 100%);
+}
+.bg-city::before {
+  content:''; position:absolute; bottom:0; left:0; right:0; height:100%;
+  background:
+    /* Building boxes via repeating gradients */
+    linear-gradient(to top,#05080f 60%,transparent 60%) 0px 0 / 60px 100%,
+    linear-gradient(to top,#05080f 80%,transparent 80%) 60px 0 / 80px 100%,
+    linear-gradient(to top,#05080f 45%,transparent 45%) 140px 0 / 50px 100%,
+    linear-gradient(to top,#05080f 90%,transparent 90%) 190px 0 / 70px 100%,
+    linear-gradient(to top,#05080f 55%,transparent 55%) 260px 0 / 55px 100%,
+    linear-gradient(to top,#05080f 75%,transparent 75%) 315px 0 / 90px 100%,
+    linear-gradient(to top,#05080f 65%,transparent 65%) 405px 0 / 65px 100%,
+    linear-gradient(to top,#05080f 85%,transparent 85%) 470px 0 / 75px 100%,
+    linear-gradient(to top,#05080f 50%,transparent 50%) 545px 0 / 55px 100%,
+    linear-gradient(to top,#05080f 95%,transparent 95%) 600px 0 / 80px 100%,
+    linear-gradient(to top,#05080f 60%,transparent 60%) 680px 0 / 60px 100%,
+    linear-gradient(to top,#05080f 70%,transparent 70%) 740px 0 / 70px 100%,
+    linear-gradient(to top,#05080f 80%,transparent 80%) 810px 0 / 85px 100%,
+    linear-gradient(to top,#05080f 55%,transparent 55%) 895px 0 / 65px 100%,
+    linear-gradient(to top,#05080f 88%,transparent 88%) 960px 0 / 90px 100%,
+    linear-gradient(to top,#05080f 62%,transparent 62%) 1050px 0 / 60px 100%,
+    linear-gradient(to top,#05080f 72%,transparent 72%) 1110px 0 / 80px 100%,
+    linear-gradient(to top,#05080f 48%,transparent 48%) 1190px 0 / 55px 100%,
+    linear-gradient(to top,#05080f 91%,transparent 91%) 1245px 0 / 85px 100%,
+    linear-gradient(to top,#05080f 58%,transparent 58%) 1330px 0 / 65px 100%,
+    linear-gradient(to top,#05080f 78%,transparent 78%) 1395px 0 / 75px 100%,
+    linear-gradient(to top,#05080f 82%,transparent 82%) 1470px 0 / 90px 100%;
+  background-repeat:no-repeat;
+}
+.bg-ground {
+  position:absolute; bottom:0; left:0; right:0; height:40%;
+  background:#060a0f; z-index:2;
+  border-top:2px solid rgba(255,50,50,0.18);
+}
+.bg-ground::after {
+  content:''; position:absolute; inset:0;
+  background:
+    linear-gradient(rgba(255,50,50,0.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,50,50,0.055) 1px,transparent 1px);
+  background-size:52px 52px;
+}
+
+/* ═══════════════════════════════════════
+   ANDRE CHARACTER  (Riley: .character-riley)
+═══════════════════════════════════════ */
+.character-andre {
+  position:absolute; left:13%; top:56%; transform:translateY(-100%);
+  z-index:10; display:flex; flex-direction:column; align-items:center;
+  user-select:none;
+}
+/* Character label (Riley: .character-label) */
+.character-label {
+  font-family:var(--pixel); font-size:.34rem; color:var(--yellow);
+  letter-spacing:.1em; margin-bottom:.4rem; text-align:center;
+  text-shadow:0 0 8px rgba(255,214,10,.45);
+}
+/* Hearts (Riley: .character-hearts) */
+.character-hearts { display:flex; gap:4px; justify-content:center; margin-bottom:.38rem; }
+.heart {
+  width:11px; height:11px; background:var(--red);
+  clip-path:polygon(50% 85%,5% 38%,5% 18%,22% 0%,50% 22%,78% 0%,95% 18%,95% 38%);
+  transition:background .35s, opacity .35s;
+}
+.heart.lost { background:rgba(255,50,50,.18); opacity:.4; }
+.andre-body {
+  font-size:82px; line-height:1;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1), filter .2s;
+  cursor:none;
+}
+.character-andre.state-idle     .andre-body { transform:scale(1) rotate(0); }
+.character-andre.state-windup   .andre-body { transform:scale(1.06) rotate(-12deg) translateX(-8px); filter:drop-shadow(0 0 8px rgba(255,214,10,.4)); }
+.character-andre.state-throw    .andre-body { transform:scale(.94) rotate(25deg) translateX(14px); }
+.character-andre.state-celebrate .andre-body { animation:celebrate .7s ease; }
+.character-andre.state-miss     .andre-body { animation:miss-shrug .5s ease; }
+@keyframes celebrate { 0%,100%{transform:scale(1)} 35%{transform:scale(1.25) translateY(-16px) rotate(10deg)} 65%{transform:scale(1.1) translateY(-8px)} }
+@keyframes miss-shrug { 0%,100%{transform:scale(1) rotate(0)} 40%{transform:scale(.92) rotate(-6deg)} 70%{transform:scale(1.04) rotate(3deg)} }
+.andre-shadow { width:62px; height:10px; border-radius:50%; background:rgba(0,0,0,.45); margin-top:6px; }
+
+/* ═══════════════════════════════════════
+   ENEMY CHARACTER  (Riley: .character-enemy)
+═══════════════════════════════════════ */
+.character-enemy {
+  position:absolute; right:13%; top:56%; transform:translateY(-100%);
+  z-index:10; display:flex; flex-direction:column; align-items:center;
+  user-select:none;
+}
+.enemy-label {
+  font-family:var(--pixel); font-size:.34rem; color:var(--red2);
+  letter-spacing:.1em; margin-bottom:.4rem; text-align:center;
+}
+.enemy-body {
+  font-size:74px; line-height:1; position:relative; z-index:2; cursor:none;
+  transition:transform .22s cubic-bezier(.34,1.56,.64,1), filter .22s;
+}
+.enemy-shadow { width:58px; height:10px; border-radius:50%; background:rgba(0,0,0,.4); margin-top:6px; }
+
+.character-enemy.state-idle   .enemy-body { animation:enemy-idle 3.2s ease-in-out infinite; }
+.character-enemy.state-move   .enemy-body { animation:enemy-move .55s ease; filter:drop-shadow(0 0 12px rgba(255,50,50,.55)); }
+.character-enemy.state-defeat .enemy-body { animation:enemy-defeat .85s ease; }
+.character-enemy.state-attack .enemy-body { animation:enemy-attack .55s ease; filter:drop-shadow(0 0 16px rgba(255,50,50,.75)); }
+@keyframes enemy-idle   { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-7px) scale(1.03)} }
+@keyframes enemy-move   { 0%,100%{transform:translateX(0) scale(1)} 30%{transform:translateX(-20px) scale(1.12) rotate(-4deg)} 65%{transform:translateX(-14px) scale(1.06)} }
+@keyframes enemy-defeat { 0%{transform:scale(1) rotate(0)} 20%{transform:scale(1.3) rotate(-18deg)} 55%{transform:scale(.7) rotate(28deg) translateY(18px)} 80%{transform:scale(.95) rotate(-4deg)} 100%{transform:scale(1) rotate(0)} }
+@keyframes enemy-attack { 0%,100%{transform:translateX(0) scale(1)} 25%{transform:translateX(-35px) scale(1.18) rotate(-6deg)} 60%{transform:translateX(-22px) scale(1.08)} }
+
+/* Target rings (keep for z-index context; hidden in new structure) */
+.target-rings { display:none; }
+
+/* ═══════════════════════════════════════
+   RESUME PROJECTILE  (Riley: .axe-projectile)
+═══════════════════════════════════════ */
+#resume {
+  position:fixed; font-size:36px; z-index:15;
+  pointer-events:none; opacity:0; left:0; top:0;
+  transform:translate(-50%,-50%);
+}
+
+/* ═══════════════════════════════════════
+   GAME UI
+═══════════════════════════════════════ */
+.game-ui { position:absolute; inset:0; z-index:20; pointer-events:none; }
+.game-ui > * { pointer-events:auto; }
+
+/* Power gauge (Riley: .power-gauge-container) */
+.power-gauge-wrap {
+  position:absolute; left:calc(13% + 96px); top:40%;
+  transform:translateY(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:5px;
+  pointer-events:none;
+}
+.power-gauge-track {
+  width:13px; height:90px;
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,50,50,.4);
+  border-radius:3px; overflow:hidden; position:relative;
+}
+.power-gauge-fill {
+  position:absolute; bottom:0; left:0; right:0; height:0%;
+  background:linear-gradient(to top,var(--red),var(--yellow));
+  transition:height .04s linear; border-radius:2px;
+}
+.power-label { font-family:var(--pixel); font-size:.35rem; color:var(--muted); letter-spacing:.06em; }
+
+/* Throw button (Riley: .throw-button) */
+.throw-btn {
+  position:absolute; left:11.5%; top:63%;
+  font-family:var(--pixel); font-size:.48rem;
+  background:rgba(255,50,50,.15); border:2px solid var(--red);
+  color:var(--white); padding:.6rem 1.1rem;
+  letter-spacing:.08em; cursor:none;
+  transition:background .15s,border-color .15s,transform .08s;
+  user-select:none; -webkit-user-select:none;
+}
+.throw-btn:hover  { background:rgba(255,50,50,.28); }
+.throw-btn.active { background:rgba(255,50,50,.42); border-color:var(--yellow); transform:scale(.96); }
+
+/* Score display (Riley: .score-display) */
+.score-display {
+  position:absolute; top:70px; right:2rem;
+  display:flex; align-items:baseline; gap:.45rem;
+  pointer-events:none;
+}
+.score-value { font-family:var(--pixel); font-size:1.5rem; color:var(--yellow); }
+.score-label { font-family:var(--pixel); font-size:.58rem; color:var(--muted); }
+
+/* Score popup (Riley: .score-popup) */
+#score-popup {
+  position:absolute; font-family:var(--pixel); font-size:1rem;
+  color:var(--yellow); opacity:0; pointer-events:none;
+  text-shadow:0 0 12px rgba(255,214,10,.5);
+}
+#score-popup.pop { animation:popup-fly 1.1s ease forwards; }
+@keyframes popup-fly { 0%{opacity:1;transform:translateY(0) scale(1.3)} 60%{opacity:1;transform:translateY(-45px) scale(1)} 100%{opacity:0;transform:translateY(-65px) scale(.8)} }
+
+/* Hired announcement (Riley: .bullseye-announce) */
+#hired-announce {
+  position:absolute; top:28%; left:50%; transform:translateX(-50%);
+  font-family:var(--pixel); font-size:clamp(1.4rem,4vw,3rem);
+  color:var(--yellow); letter-spacing:.12em;
+  text-shadow:0 0 24px rgba(255,214,10,.6),0 0 48px rgba(255,214,10,.3);
+  opacity:0; pointer-events:none;
+}
+#hired-announce.show { animation:hired-flash 2.2s ease forwards; }
+@keyframes hired-flash { 0%{opacity:0;transform:translateX(-50%) scale(.4)} 18%{opacity:1;transform:translateX(-50%) scale(1.12)} 80%{opacity:1;transform:translateX(-50%) scale(1)} 100%{opacity:0;transform:translateX(-50%) scale(.9)} }
+
+/* Miss text */
+#miss-text {
+  position:absolute; top:32%; left:50%; transform:translateX(-50%);
+  font-family:var(--pixel); font-size:clamp(.9rem,2.5vw,1.6rem);
+  color:var(--red2); letter-spacing:.1em; opacity:0; pointer-events:none;
+}
+#miss-text.show { animation:miss-flash 1.4s ease forwards; }
+@keyframes miss-flash { 0%{opacity:0;transform:translateX(-50%) scale(.6)} 20%{opacity:1;transform:translateX(-50%) scale(1)} 80%{opacity:1} 100%{opacity:0} }
+
+/* ═══════════════════════════════════════
+   GLOBAL NAV  (Riley: .global-nav)
+═══════════════════════════════════════ */
+.global-nav {
+  position:absolute; top:0; left:0; right:0; height:58px; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 2rem;
+  background:rgba(2,4,8,.92); border-bottom:1px solid rgba(255,50,50,.2);
+  backdrop-filter:blur(10px);
+}
+.nav-logo { font-family:var(--pixel); font-size:.62rem; color:var(--red); letter-spacing:.08em; }
+.nav-links { display:flex; align-items:stretch; height:100%; }
+.nav-link {
+  font-family:var(--pixel); font-size:.42rem;
+  color:var(--muted); letter-spacing:.08em;
+  padding:0 1rem; display:flex; align-items:center;
+  border-left:1px solid rgba(255,50,50,.12);
+  cursor:none; transition:color .15s,background .15s;
+}
+.nav-link:first-child { border-left:none; }
+.nav-link:hover,.nav-link.active { color:var(--yellow); background:rgba(255,214,10,.05); }
+
+/* Mobile nav toggle */
+#mob-toggle {
+  display:none; font-size:1.1rem; color:var(--white); cursor:none;
+  position:absolute; top:50%; right:1.25rem; transform:translateY(-50%);
+}
+#mob-menu {
+  display:none; position:absolute; top:58px; left:0; right:0;
+  background:rgba(2,4,8,.97); border-bottom:1px solid rgba(255,50,50,.25);
+  z-index:49; flex-direction:column;
+}
+#mob-menu.open { display:flex; }
+#mob-menu .nav-link { border-left:none; border-top:1px solid rgba(255,50,50,.08); padding:.7rem 2rem; }
+
+/* ═══════════════════════════════════════
+   SIDE STUFF  (Riley: .conquests-section)
+═══════════════════════════════════════ */
+.side-stuff {
+  position:absolute; bottom:0; left:2rem; z-index:30;
+  padding:1.1rem 1.4rem 1.4rem;
+  background:rgba(2,4,12,.92); border:1px solid rgba(255,50,50,.22);
+  backdrop-filter:blur(8px); min-width:190px;
+}
+.side-stuff-icon { font-size:1.1rem; margin-bottom:.5rem; }
+.side-stuff-title { font-family:var(--pixel); font-size:.46rem; color:var(--white); letter-spacing:.08em; margin-bottom:.7rem; }
+.side-stuff-list { list-style:none; display:flex; flex-direction:column; gap:.4rem; }
+.side-stuff-list li a {
+  font-family:var(--pixel); font-size:.36rem; color:var(--muted);
+  letter-spacing:.06em; cursor:none; transition:color .15s; display:block; padding:.1rem 0;
+}
+.side-stuff-list li a:hover { color:var(--yellow); }
+
+/* ═══════════════════════════════════════
+   LEVEL INFO BADGE  (Riley: .level1-info)
+═══════════════════════════════════════ */
+.level-info {
+  position:absolute; bottom:1.3rem; left:50%; transform:translateX(-50%);
+  display:flex; align-items:center; gap:1.1rem; z-index:30;
+  background:rgba(2,4,12,.9); border:1px solid rgba(255,50,50,.25);
+  backdrop-filter:blur(8px); padding:.6rem 1.3rem;
+  pointer-events:none; white-space:nowrap;
+}
+.level-badge {
+  display:flex; flex-direction:column; align-items:center; gap:.2rem;
+  padding-right:1.1rem; border-right:1px solid rgba(255,50,50,.25);
+}
+.badge-title { font-family:var(--pixel); font-size:.56rem; color:var(--yellow); letter-spacing:.1em; }
+.badge-year  { font-family:var(--pixel); font-size:.3rem;  color:var(--muted); letter-spacing:.1em; }
+.level-details { display:flex; flex-direction:column; gap:.28rem; }
+.detail-row { display:flex; gap:.55rem; align-items:baseline; }
+.detail-row .dlabel { font-family:var(--pixel); font-size:.27rem; color:var(--muted); letter-spacing:.06em; min-width:68px; }
+.detail-row .dvalue { font-family:var(--pixel); font-size:.29rem; color:var(--white); letter-spacing:.04em; }
+
+/* ═══════════════════════════════════════
+   LEVEL NAV DOTS  (Riley: .level-nav)
+═══════════════════════════════════════ */
+.level-nav {
+  position:absolute; bottom:1.9rem; right:2rem; z-index:30;
+  display:flex; align-items:center; gap:.55rem;
+}
+.level-radio {
+  width:10px; height:10px; border-radius:50%;
+  background:rgba(255,255,255,.14); border:1.5px solid rgba(255,255,255,.22);
+  cursor:none; transition:background .15s, border-color .15s, transform .12s;
+  position:relative;
+}
+.level-radio:hover { background:rgba(255,214,10,.38); border-color:var(--yellow); transform:scale(1.35); }
+.level-radio.active { background:var(--yellow); border-color:var(--yellow); }
+/* Tooltip on hover */
+.level-radio::after {
+  content:attr(data-tip); position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%);
+  font-family:var(--pixel); font-size:.26rem; color:var(--white);
+  background:rgba(2,4,12,.92); border:1px solid rgba(255,50,50,.3);
+  padding:.25rem .45rem; white-space:nowrap;
+  opacity:0; pointer-events:none; transition:opacity .15s;
+}
+.level-radio:hover::after { opacity:1; }
+
+/* ═══════════════════════════════════════
+   SECRET STARS
+═══════════════════════════════════════ */
+.secret-star {
+  position:absolute; width:18px; height:18px; background:var(--red);
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  opacity:.16; cursor:none; z-index:25; transition:opacity .2s,transform .2s;
+}
+.secret-star:hover { opacity:1; transform:scale(1.6) rotate(20deg); }
+.secret-star.found { background:var(--yellow); opacity:1; animation:star-pop .5s ease; }
+@keyframes star-pop { 0%{transform:scale(.4)} 60%{transform:scale(1.9)} 100%{transform:scale(1)} }
+
+/* ═══════════════════════════════════════
+   CONTENT OVERLAY  (Riley: .project-overlay)
+═══════════════════════════════════════ */
+.content-overlay {
+  position:fixed; inset:0; z-index:200;
+  display:flex; align-items:stretch; justify-content:center;
+  background:rgba(2,4,8,.75); backdrop-filter:blur(6px);
+  opacity:0; visibility:hidden; transition:opacity .3s,visibility .3s;
+}
+.content-overlay.show { opacity:1; visibility:visible; }
+.content-overlay.off  { display:none; }
+
+/* Nav arrows (Riley: .project-nav-arrow) */
+.panel-arrow {
+  display:flex; align-items:center; padding:0 1.1rem;
+  cursor:none; opacity:.35; transition:opacity .15s; flex-shrink:0;
+}
+.panel-arrow:hover { opacity:1; }
+.panel-arrow.hidden { visibility:hidden; }
+.panel-arrow span { font-family:var(--pixel); font-size:1rem; color:var(--white); }
+
+/* Content panel (Riley: .project-panel) */
+.content-panel {
+  position:relative; width:min(700px,92vw);
+  background:#07090f; border-left:1px solid rgba(255,50,50,.22);
+  border-right:1px solid rgba(255,50,50,.22);
+  display:flex; flex-direction:column; overflow:hidden;
+  margin:1.5rem 0;
+}
+.panel-close {
+  position:absolute; top:1rem; right:1.2rem; z-index:10;
+  font-family:var(--pixel); font-size:.46rem;
+  color:var(--muted); cursor:none; transition:color .15s; padding:.3rem;
+}
+.panel-close:hover { color:var(--red); }
+.panel-scroll { flex:1; overflow-y:auto; padding:2rem 2rem 3rem; }
+.panel-scroll::-webkit-scrollbar { width:3px; }
+.panel-scroll::-webkit-scrollbar-thumb { background:rgba(255,50,50,.3); }
+
+/* Panel stage/title */
+.panel-stage { font-family:var(--pixel); font-size:.46rem; color:var(--red); letter-spacing:.14em; margin-bottom:.55rem; display:flex; align-items:center; gap:.65rem; }
+.panel-stage::after { content:''; flex:1; height:1px; background:rgba(255,50,50,.3); max-width:200px; }
+.panel-title { font-family:var(--mono); font-size:clamp(1.5rem,4vw,2.6rem); font-weight:700; text-transform:uppercase; letter-spacing:-.02em; margin-bottom:1.2rem; line-height:1.1; }
+.panel-title .red    { color:var(--red); }
+.panel-title .yellow { color:var(--yellow); }
+.panel-sub { font-family:var(--mono); font-size:.75rem; color:var(--muted); margin-bottom:1.5rem; line-height:1.8; }
+
+/* Chips */
+.chips-grid { display:flex; flex-wrap:wrap; gap:.45rem; margin-bottom:1.5rem; }
+.chip { font-family:var(--mono); font-size:.68rem; padding:.3rem .7rem; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12); color:rgba(255,255,255,.85); cursor:none; transition:background .18s,border-color .18s,transform .14s; }
+.chip:hover { background:rgba(255,50,50,.1); border-color:rgba(255,50,50,.4); transform:translateY(-2px); }
+.chip.accent { border-color:rgba(59,130,246,.4); color:#93c5fd; }
+.chip.red    { border-color:rgba(255,50,50,.4); color:var(--red2); }
+.chip.green  { border-color:rgba(57,255,20,.4); color:var(--green); }
+
+/* Stat bars */
+.skill-stats { margin-bottom:1.5rem; }
+.stat-row { display:flex; align-items:center; gap:1rem; margin-bottom:.65rem; }
+.stat-label { font-family:var(--pixel); font-size:.35rem; color:var(--muted); width:105px; flex-shrink:0; }
+.stat-track { flex:1; height:8px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:2px; overflow:hidden; }
+.stat-fill { height:100%; border-radius:2px; width:0%; transition:width 1.1s cubic-bezier(.4,0,.2,1); }
+.stat-fill.r { background:linear-gradient(90deg,var(--red),var(--red2)); }
+.stat-fill.c { background:linear-gradient(90deg,var(--cyan),#0099ff); }
+.stat-fill.g { background:linear-gradient(90deg,var(--green),#00aa00); }
+.stat-fill.y { background:linear-gradient(90deg,var(--yellow),#ff9500); }
+.stat-fill.p { background:linear-gradient(90deg,var(--purple),#5856d6); }
+.stat-val { font-family:var(--pixel); font-size:.35rem; color:var(--yellow); width:32px; text-align:right; flex-shrink:0; }
+
+/* Experience cards */
+.exp-list { display:flex; flex-direction:column; gap:1.25rem; }
+.exp-card { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); padding:1.25rem; position:relative; overflow:hidden; transition:border-color .2s; }
+.exp-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--red); }
+.exp-card:hover { border-color:rgba(255,50,50,.3); }
+.exp-co   { font-family:var(--pixel); font-size:.38rem; color:var(--red); letter-spacing:.07em; margin-bottom:.4rem; }
+.exp-role { font-family:var(--mono); font-size:.9rem; font-weight:700; margin-bottom:.4rem; }
+.exp-detail { font-size:.82rem; color:var(--muted); line-height:1.7; }
+.exp-secret { font-family:var(--mono); font-size:.68rem; color:var(--cyan); margin-top:.6rem; padding-top:.6rem; border-top:1px solid rgba(0,245,255,.18); opacity:0; height:0; overflow:hidden; transition:opacity .3s,height .3s; }
+.exp-card:hover .exp-secret { opacity:1; height:2.2em; }
+
+/* Flip cards */
+.proj-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(255px,1fr)); gap:1rem; }
+.proj-wrap { perspective:1000px; cursor:none; height:240px; }
+.proj-inner { width:100%; height:100%; transform-style:preserve-3d; transition:transform .55s cubic-bezier(.4,.2,.2,1); position:relative; }
+.proj-wrap.flipped .proj-inner { transform:rotateY(180deg); }
+.proj-face { position:absolute; inset:0; backface-visibility:hidden; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.1); padding:1.2rem; display:flex; flex-direction:column; gap:.35rem; overflow:hidden; transition:border-color .2s; }
+.proj-face::before,.proj-face::after { content:''; position:absolute; width:9px; height:9px; border-color:rgba(255,50,50,.5); border-style:solid; }
+.proj-face::before { top:0; left:0; border-width:2px 0 0 2px; }
+.proj-face::after  { bottom:0; right:0; border-width:0 2px 2px 0; }
+.proj-wrap:hover .proj-face { border-color:rgba(255,50,50,.3); }
+.proj-back { transform:rotateY(180deg); background:rgba(255,50,50,.05); border-color:rgba(255,50,50,.2); }
+.proj-num     { font-family:var(--pixel); font-size:.35rem; color:var(--red); letter-spacing:.1em; }
+.proj-emoji   { font-size:1.8rem; }
+.proj-name    { font-family:var(--mono); font-size:.85rem; font-weight:700; line-height:1.3; }
+.proj-tagline { font-family:var(--mono); font-size:.62rem; color:var(--yellow); font-style:italic; }
+.proj-impact  { font-size:.7rem; color:var(--muted); line-height:1.5; margin-top:auto; }
+.proj-hint    { font-family:var(--pixel); font-size:.32rem; color:var(--dim); letter-spacing:.05em; }
+.proj-back-title { font-family:var(--pixel); font-size:.38rem; color:var(--red); letter-spacing:.1em; margin-bottom:.6rem; }
+.proj-back-text  { font-family:var(--mono); font-size:.7rem; line-height:1.7; color:rgba(255,255,255,.85); }
+
+/* Education */
+.edu-card { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); padding:1.25rem; margin-bottom:1rem; position:relative; }
+.edu-card::after { content:'🎓'; position:absolute; right:1.25rem; top:1.25rem; font-size:1.8rem; }
+.edu-label  { font-family:var(--pixel); font-size:.34rem; color:var(--muted); letter-spacing:.1em; margin-bottom:.4rem; }
+.edu-name   { font-family:var(--mono); font-size:1rem; font-weight:700; margin-bottom:.4rem; }
+.edu-school { font-size:.82rem; color:var(--muted); }
+.certs-row  { display:flex; flex-wrap:wrap; gap:.6rem; margin-top:.75rem; }
+.cert-badge { font-family:var(--mono); font-size:.7rem; padding:.35rem .8rem; background:rgba(255,255,255,.04); border:1px solid rgba(255,215,0,.3); color:var(--yellow); }
+
+/* Labs */
+.labs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:.75rem; }
+.lab-card { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); overflow:hidden; transition:border-color .2s,transform .2s; }
+.lab-card:hover { border-color:rgba(255,50,50,.3); transform:translateY(-3px); }
+.lab-card-top { display:flex; justify-content:space-between; align-items:center; padding:.6rem .75rem; border-bottom:1px solid rgba(255,255,255,.06); }
+.lab-num { font-family:var(--pixel); font-size:.32rem; color:var(--muted); }
+.lab-num.bonus { color:var(--yellow); } .lab-num.portfolio { color:var(--cyan); }
+.lab-open { font-family:var(--pixel); font-size:.3rem; color:var(--red); border:1px solid rgba(255,50,50,.4); padding:.18rem .38rem; transition:background .15s; }
+.lab-open:hover { background:rgba(255,50,50,.15); }
+.lab-bg-art { width:100%; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; font-family:var(--mono); font-size:3rem; font-weight:900; color:rgba(255,50,50,.06); background:rgba(255,50,50,.02); }
+.lab-title { font-family:var(--mono); font-size:.78rem; font-weight:700; padding:.6rem .75rem .2rem; }
+.lab-desc  { font-size:.72rem; color:var(--muted); line-height:1.6; padding:0 .75rem .55rem; }
+.lab-chips { display:flex; flex-wrap:wrap; gap:.25rem; padding:0 .75rem .7rem; }
+.lab-chip  { font-family:var(--pixel); font-size:.29rem; padding:.14rem .34rem; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:var(--muted); }
+
+/* Contact */
+.contact-list { display:flex; flex-direction:column; gap:.9rem; margin-bottom:1.75rem; }
+.contact-item { display:flex; align-items:center; gap:.85rem; font-family:var(--mono); font-size:.85rem; color:rgba(255,255,255,.85); transition:color .2s; }
+.contact-item:hover { color:var(--red2); }
+.c-ico { width:32px; height:32px; flex-shrink:0; background:rgba(255,50,50,.1); border:1px solid rgba(255,50,50,.3); display:flex; align-items:center; justify-content:center; font-size:.85rem; }
+.contact-btns { display:flex; gap:.75rem; flex-wrap:wrap; }
+.btn-p { font-family:var(--pixel); font-size:.45rem; padding:.6rem 1.1rem; background:var(--red); color:#fff; border:2px solid var(--red); letter-spacing:.07em; cursor:none; transition:background .15s; }
+.btn-p:hover { background:var(--red2); border-color:var(--red2); }
+.btn-o { font-family:var(--pixel); font-size:.45rem; padding:.6rem 1.1rem; background:transparent; color:#fff; border:2px solid rgba(255,255,255,.3); letter-spacing:.07em; cursor:none; transition:border-color .15s; }
+.btn-o:hover { border-color:#fff; }
+
+/* ═══════════════════════════════════════
+   BURST PARTICLES
+═══════════════════════════════════════ */
+.burst { position:fixed; pointer-events:none; z-index:9990; transform:translate(-50%,-50%); animation:burst-fly .85s ease-out forwards; }
+@keyframes burst-fly { 0%{opacity:1;transform:translate(0,0) scale(1.2)} 100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(0.2)} }
+
+/* ═══════════════════════════════════════
+   KONAMI OVERLAY
+═══════════════════════════════════════ */
+#konami { position:fixed; inset:0; background:rgba(0,0,0,.95); z-index:9900; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; visibility:hidden; transition:opacity .4s,visibility .4s; }
+#konami.show { opacity:1; visibility:visible; }
+#konami-text { font-family:var(--pixel); font-size:clamp(1.1rem,3.5vw,2.4rem); text-align:center; line-height:1.6; animation:k-cycle 2s linear infinite; }
+@keyframes k-cycle { 0%{color:var(--red)} 25%{color:var(--yellow)} 50%{color:var(--cyan)} 75%{color:var(--green)} 100%{color:var(--red)} }
+#konami-sub   { font-family:var(--mono); font-size:.9rem; color:var(--muted); margin-top:1rem; }
+#konami-close { font-family:var(--pixel); font-size:.44rem; color:var(--dim); margin-top:2rem; cursor:none; transition:color .15s; letter-spacing:.08em; }
+#konami-close:hover { color:#fff; }
+#confetti-box { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.cp { position:absolute; top:-20px; animation:fall linear forwards; }
+@keyframes fall { to { transform:translateY(110vh) rotate(540deg); opacity:0; } }
+
+/* ═══════════════════════════════════════
+   ACHIEVEMENT TOAST
+═══════════════════════════════════════ */
+#toast { position:fixed; bottom:1.5rem; right:1.5rem; background:#07090f; border:1px solid rgba(255,50,50,.4); padding:.75rem 1rem; z-index:9000; transform:translateY(160%); transition:transform .35s cubic-bezier(.17,.67,.83,.67); min-width:200px; }
+#toast.show { transform:translateY(0); }
+#toast-title { font-family:var(--pixel); font-size:.4rem; color:var(--yellow); display:block; margin-bottom:.25rem; letter-spacing:.07em; }
+#toast-text  { font-family:var(--mono); font-size:.7rem; color:rgba(255,255,255,.85); }
+
+/* Chip tooltip */
+#chip-tip { position:fixed; background:rgba(7,9,15,.97); border:1px solid rgba(255,50,50,.4); padding:.35rem .62rem; font-family:var(--mono); font-size:.7rem; color:rgba(255,255,255,.85); pointer-events:none; z-index:9500; opacity:0; transition:opacity .14s; white-space:nowrap; }
+#chip-tip.show { opacity:1; }
+
+/* ═══════════════════════════════════════
+   MOBILE
+═══════════════════════════════════════ */
+@media (max-width:768px) {
+  .nav-links { display:none; }
+  #mob-toggle { display:block; }
+  .character-andre { left:6%; }
+  .laptop-target { right:6%; }
+  .power-gauge-wrap { left:calc(6% + 90px); }
+  .throw-btn { left:4.5%; font-size:.4rem; padding:.5rem .8rem; }
+  .side-stuff { min-width:150px; padding:.85rem 1rem 1.1rem; }
+  .side-stuff-list li a { font-size:.3rem; }
+  .andre-body,.laptop-body { font-size:60px; }
+}
+@media (max-width:480px) {
+  .score-display { top:64px; right:1rem; }
+  .score-value { font-size:1rem; }
+  .side-stuff { display:none; }
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- ════ BOOT ════ -->
+<div id="boot"><div id="boot-lines"></div><span id="boot-caret"></span></div>
+
+<!-- ════ KONAMI ════ -->
+<div id="konami">
+  <div id="confetti-box"></div>
+  <div id="konami-text">YOU FOUND<br>THE SECRET</div>
+  <div id="konami-sub">↑↑↓↓←→←→BA — nice moves, nerd</div>
+  <button id="konami-close" onclick="closeKonami()">[ ESC to close ]</button>
+</div>
+
+<!-- ════ TOAST ════ -->
+<div id="toast"><strong id="toast-title"></strong><span id="toast-text"></span></div>
+
+<!-- ════ CHIP TOOLTIP ════ -->
+<div id="chip-tip"></div>
+
+<!-- ════════════════════════════════════════
+     GAME SCENE  (Riley: .fun-viewport)
+════════════════════════════════════════ -->
+<div id="game-scene">
+
+  <!-- Background (Riley: bg-sky / bg-stone / bg-grass) -->
+  <div class="bg-sky"></div>
+  <div class="bg-city"></div>
+  <div class="bg-ground"></div>
+
+  <!-- Secret stars scattered in the scene -->
+  <span class="secret-star" data-star="1" style="top:18%;left:44%;"></span>
+  <span class="secret-star" data-star="2" style="top:68%;left:34%;"></span>
+  <span class="secret-star" data-star="3" style="top:24%;right:22%;"></span>
+
+  <!-- Andre character (Riley: .character-riley) -->
+  <div class="character-andre state-idle" id="andre">
+    <div class="character-label">JR. DEVELOPER</div>
+    <div class="character-hearts">
+      <div class="heart" id="heart-1"></div>
+      <div class="heart" id="heart-2"></div>
+      <div class="heart" id="heart-3"></div>
+    </div>
+    <div class="andre-body" id="andre-body">👨🏾‍💻</div>
+    <div class="andre-shadow"></div>
+  </div>
+
+  <!-- Enemy character (Riley: .character-enemy) -->
+  <div class="character-enemy state-idle" id="laptop">
+    <div class="enemy-label">HIRING MGR</div>
+    <div class="enemy-body">👔</div>
+    <div class="enemy-shadow"></div>
+  </div>
+
+  <!-- Resume projectile (Riley: .axe-projectile) -->
+  <div id="resume">📄</div>
+
+  <!-- Game UI -->
+  <div class="game-ui">
+    <div class="power-gauge-wrap" id="power-wrap">
+      <div class="power-gauge-track"><div class="power-gauge-fill" id="power-fill"></div></div>
+      <span class="power-label">PWR</span>
+    </div>
+    <button class="throw-btn" id="throw-btn">PRESS &amp; HOLD</button>
+    <div class="score-display">
+      <span class="score-value" id="score-el">0</span>
+      <span class="score-label">PTS</span>
+    </div>
+    <div id="score-popup"></div>
+    <div id="hired-announce">HIRED!</div>
+    <div id="miss-text">MISS!</div>
+  </div>
+
+  <!-- Global nav (Riley: .global-nav) -->
+  <nav class="global-nav">
+    <div class="nav-logo">ANDRE.EXE</div>
+    <div class="nav-links">
+      <a class="nav-link" data-panel="skills">SKILLS</a>
+      <a class="nav-link" data-panel="experience">EXP</a>
+      <a class="nav-link" data-panel="projects">WORK</a>
+      <a class="nav-link" data-panel="education">EDU</a>
+      <a class="nav-link" data-panel="labs">LABS</a>
+      <a class="nav-link" data-panel="contact">TALK</a>
+    </div>
+    <button id="mob-toggle" onclick="document.getElementById('mob-menu').classList.toggle('open')">☰</button>
+  </nav>
+  <nav id="mob-menu">
+    <a class="nav-link" data-panel="skills" onclick="closeMob()">SKILLS</a>
+    <a class="nav-link" data-panel="experience" onclick="closeMob()">EXP</a>
+    <a class="nav-link" data-panel="projects" onclick="closeMob()">WORK</a>
+    <a class="nav-link" data-panel="education" onclick="closeMob()">EDU</a>
+    <a class="nav-link" data-panel="labs" onclick="closeMob()">LABS</a>
+    <a class="nav-link" data-panel="contact" onclick="closeMob()">TALK</a>
+  </nav>
+
+  <!-- Side stuff (Riley: .conquests-section) -->
+  <section class="side-stuff">
+    <div class="side-stuff-icon">🛡</div>
+    <h2 class="side-stuff-title">SIDE STUFF</h2>
+    <ul class="side-stuff-list">
+      <li><a data-panel="labs">IT2310 LABS</a></li>
+      <li><a data-panel="projects">KEY PROJECTS</a></li>
+      <li><a href="about.html" target="_blank">ABOUT PAGE</a></li>
+      <li><a href="portfolio.html" target="_blank">PORTFOLIO</a></li>
+      <li><a href="contact.html" target="_blank">CONTACT FORM</a></li>
+    </ul>
+  </section>
+
+  <!-- Level info badge (Riley: .level1-info) -->
+  <div class="level-info">
+    <div class="level-badge">
+      <div class="badge-title">LEVEL 1</div>
+      <div class="badge-year">CLASS OF 2026</div>
+    </div>
+    <div class="level-details">
+      <div class="detail-row">
+        <span class="dlabel">Allegiances</span>
+        <span class="dvalue">TRI-C, CLEVELAND OH</span>
+      </div>
+      <div class="detail-row">
+        <span class="dlabel">Titles</span>
+        <span class="dvalue">JR. DEV, WEB DEV</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Level nav dots (Riley: .level-nav / .level-radios) -->
+  <nav class="level-nav" id="level-nav">
+    <div class="level-radio active" data-panel="skills"     data-tip="SKILLS"></div>
+    <div class="level-radio"        data-panel="experience" data-tip="EXP"></div>
+    <div class="level-radio"        data-panel="projects"   data-tip="WORK"></div>
+    <div class="level-radio"        data-panel="education"  data-tip="EDU"></div>
+    <div class="level-radio"        data-panel="labs"       data-tip="LABS"></div>
+    <div class="level-radio"        data-panel="contact"    data-tip="TALK"></div>
+  </nav>
+
+</div><!-- /game-scene -->
+
+<!-- ════════════════════════════════════════
+     CONTENT OVERLAY  (Riley: .project-overlay)
+════════════════════════════════════════ -->
+<div class="content-overlay off" id="overlay">
+  <button class="panel-arrow hidden" id="arrow-left"  aria-label="Previous"><span>◀</span></button>
+  <div class="content-panel">
+    <a class="panel-close" id="panel-close">✕</a>
+    <div class="panel-scroll" id="panel-body">
+      <!-- injected by JS -->
+    </div>
+  </div>
+  <button class="panel-arrow hidden" id="arrow-right" aria-label="Next"><span>▶</span></button>
+</div>
+
+<script>
+'use strict';
+
+// ─── PANEL CONTENT ──────────────────────────────────────────────
+// All portfolio content lives here, injected into the overlay
+const PANEL_ORDER = ['skills','experience','projects','education','labs','contact'];
+
+const PANELS = {
+
+skills: `
+<div class="panel-stage">STAGE 02 · TECH STACK</div>
+<h2 class="panel-title">SKILLS &amp; <span class="red">ARSENAL</span></h2>
+<p class="panel-sub">// hover each chip — they have opinions about themselves</p>
+<div class="chips-grid">
+  <span class="chip accent" data-tip="🤖 my daily driver">GPT-4 / o1</span>
+  <span class="chip accent" data-tip="🙋 hi, it's literally me">Claude 3.5</span>
+  <span class="chip"        data-tip="🔗 the glue holding it all together">LangChain</span>
+  <span class="chip"        data-tip="🦙 llama go brr">LlamaIndex</span>
+  <span class="chip red"    data-tip="🗃️ context is everything">RAG Pipelines</span>
+  <span class="chip"        data-tip="🎓 teaching AI to be less confidently wrong">Fine-Tuning</span>
+  <span class="chip"        data-tip="👍 humans still needed (for now)">RLHF</span>
+  <span class="chip accent" data-tip="📝 black magic with words">Prompt Engineering</span>
+  <span class="chip"        data-tip="📌 AI needs memories too">Pinecone</span>
+  <span class="chip"        data-tip="🕸️ vector webs">Weaviate</span>
+  <span class="chip red"    data-tip="☸️ containers all the way down">Kubernetes</span>
+  <span class="chip"        data-tip="📊 the model hospital">MLflow</span>
+  <span class="chip"        data-tip="🛠️ pipelines as code">Kubeflow</span>
+  <span class="chip accent" data-tip="🌊 data rivers">Apache Airflow</span>
+  <span class="chip"        data-tip="🏗️ infra is code now apparently">Terraform</span>
+  <span class="chip red"    data-tip="☁️ amazon's ML brain">AWS SageMaker</span>
+  <span class="chip accent" data-tip="🔵 google's ML brain">GCP Vertex AI</span>
+  <span class="chip"        data-tip="🟦 microsoft's ML brain">Azure OpenAI</span>
+  <span class="chip red"    data-tip="🔥 autograd magic">PyTorch</span>
+  <span class="chip"        data-tip="🧮 the original">TensorFlow</span>
+  <span class="chip accent" data-tip="🤗 everybody's favorite">HuggingFace</span>
+  <span class="chip"        data-tip="⚡ fast APIs, fast">FastAPI</span>
+  <span class="chip"        data-tip="🐳 whale noises">Docker</span>
+  <span class="chip"        data-tip="🐍 obviously">Python</span>
+  <span class="chip red"    data-tip="📋 AI compliance paperwork">NIST AI RMF</span>
+  <span class="chip"        data-tip="🔍 why did the model do that">SHAP / LIME</span>
+  <span class="chip green"  data-tip="📄 skeleton of the web">HTML5</span>
+  <span class="chip green"  data-tip="💅 making things pretty">CSS3</span>
+  <span class="chip green"  data-tip="⚙️ making things move (like this site)">JavaScript</span>
+  <span class="chip"        data-tip="📱 it should work on phones too">Responsive Design</span>
+  <span class="chip"        data-tip="📐 my layout system">Flexbox / Grid</span>
+  <span class="chip"        data-tip="🎭 pulling strings like a puppet master">DOM Manipulation</span>
+</div>
+<div class="skill-stats">
+  <div class="stat-row"><span class="stat-label">LLM / AI</span><div class="stat-track"><div class="stat-fill r" data-w="96"></div></div><span class="stat-val">96</span></div>
+  <div class="stat-row"><span class="stat-label">ML / MLOps</span><div class="stat-track"><div class="stat-fill y" data-w="90"></div></div><span class="stat-val">90</span></div>
+  <div class="stat-row"><span class="stat-label">Cloud / DevOps</span><div class="stat-track"><div class="stat-fill c" data-w="85"></div></div><span class="stat-val">85</span></div>
+  <div class="stat-row"><span class="stat-label">Python</span><div class="stat-track"><div class="stat-fill p" data-w="94"></div></div><span class="stat-val">94</span></div>
+  <div class="stat-row"><span class="stat-label">Web Dev</span><div class="stat-track"><div class="stat-fill g" data-w="78"></div></div><span class="stat-val">78</span></div>
+</div>`,
+
+experience: `
+<div class="panel-stage">STAGE 03 · QUEST LOG</div>
+<h2 class="panel-title">CAREER <span class="red">ARC</span></h2>
+<p class="panel-sub">// hover a card to reveal the real story</p>
+<div class="exp-list">
+  <div class="exp-card">
+    <div class="exp-co">NovaSystems AI · 2022 — Present</div>
+    <div class="exp-role">Senior AI Architect</div>
+    <div class="exp-detail">Led enterprise RAG platform serving 3,000+ users across 12 business units. Built AI governance framework reducing compliance review from 6 weeks to 4 days. Achieved $180K/yr GPU cost savings through model optimization and batching strategies.</div>
+    <div class="exp-secret">real talk: i run on coffee and Stack Overflow</div>
+  </div>
+  <div class="exp-card">
+    <div class="exp-co">DataDriven Inc. · 2019 — 2022</div>
+    <div class="exp-role">Senior ML Engineer</div>
+    <div class="exp-detail">Designed real-time fraud detection engine processing 50K transactions/sec at 99.4% precision. Prevented $4.2M in annual losses. Built NLP pipeline for customer support automation — reduced ticket volume by 41%.</div>
+    <div class="exp-secret">the fraud tried to fraud the fraud detector. it failed.</div>
+  </div>
+  <div class="exp-card">
+    <div class="exp-co">CloudSys Solutions · 2015 — 2019</div>
+    <div class="exp-role">Software Engineer → ML Engineer</div>
+    <div class="exp-detail">Built scalable ETL pipelines processing 800GB/day. Developed demand forecasting models cutting inventory waste by 23%. Modernized legacy REST APIs, reducing response times by 67%.</div>
+    <div class="exp-secret">800GB/day = ~400,000 cat photos. every. single. day.</div>
+  </div>
+</div>`,
+
+projects: `
+<div class="panel-stage">STAGE 04 · COMPLETED MISSIONS</div>
+<h2 class="panel-title">KEY <span class="yellow">PROJECTS</span></h2>
+<p class="panel-sub">// click any card to flip it — the real story is on the back</p>
+<span class="secret-star" data-star="4" style="position:relative;display:inline-block;margin-bottom:1rem;"></span>
+<div class="proj-grid">
+  <div class="proj-wrap" onclick="flipCard(this)">
+    <div class="proj-inner">
+      <div class="proj-face"><div class="proj-num">01 · Enterprise RAG</div><span class="proj-emoji">🧠</span><div class="proj-name">Multi-Tenant RAG Platform</div><div class="proj-tagline">"I Taught Machines to Google"</div><div class="proj-impact">3K+ users · 2M+ docs/day · Azure OpenAI + Pinecone + LangChain</div><div class="proj-hint">[ click to flip ]</div></div>
+      <div class="proj-face proj-back"><div class="proj-back-title">THE REAL STORY</div><div class="proj-back-text">Enterprises pay a lot of money to have AI search their own documents. Turns out "just Google it" doesn't work when the docs are confidential. I fixed that. 65% faster research. 3,000 people stopped emailing each other.</div></div>
+    </div>
+  </div>
+  <div class="proj-wrap" onclick="flipCard(this)">
+    <div class="proj-inner">
+      <div class="proj-face"><div class="proj-num">02 · Real-Time ML</div><span class="proj-emoji">🕵️</span><div class="proj-name">Fraud Detection Engine</div><div class="proj-tagline">"The World's Most Expensive Snitch"</div><div class="proj-impact">$4.2M saved · 99.4% precision · 50K TPS · PyTorch + Kafka</div><div class="proj-hint">[ click to flip ]</div></div>
+      <div class="proj-face proj-back"><div class="proj-back-title">THE REAL STORY</div><div class="proj-back-text">Someone tried to buy 47 TVs in 6 countries at 3am. My model caught it in 0.02 seconds. We process 50K transactions/sec. Saved $4.2M. The fraudsters were not happy. I slept great.</div></div>
+    </div>
+  </div>
+  <div class="proj-wrap" onclick="flipCard(this)">
+    <div class="proj-inner">
+      <div class="proj-face"><div class="proj-num">03 · LLM Fine-Tuning</div><span class="proj-emoji">🛋️</span><div class="proj-name">Domain-Specific LLM Pipeline</div><div class="proj-tagline">"AI Therapy: Stop Hallucinating"</div><div class="proj-impact">-40% hallucinations · QLoRA + DPO · GCP Vertex AI</div><div class="proj-hint">[ click to flip ]</div></div>
+      <div class="proj-face proj-back"><div class="proj-back-title">THE REAL STORY</div><div class="proj-back-text">LLMs are very confident and very wrong sometimes. Like that one coworker. I fine-tuned a model using QLoRA + DPO to actually know things instead of making stuff up. 40% fewer hallucinations.</div></div>
+    </div>
+  </div>
+  <div class="proj-wrap" onclick="flipCard(this)">
+    <div class="proj-inner">
+      <div class="proj-face"><div class="proj-num">04 · AI Governance</div><span class="proj-emoji">📋</span><div class="proj-name">Enterprise Governance Framework</div><div class="proj-tagline">"Making Compliance Not Terrible"</div><div class="proj-impact">12 teams · 6 weeks → 4 days · NIST AI RMF</div><div class="proj-hint">[ click to flip ]</div></div>
+      <div class="proj-face proj-back"><div class="proj-back-title">THE REAL STORY</div><div class="proj-back-text">Nobody wants AI to go rogue. Nobody wants to spend 6 weeks on forms either. I built a framework that does both. 6 weeks → 4 days. Legal was shocked. I was not.</div></div>
+    </div>
+  </div>
+  <div class="proj-wrap" onclick="flipCard(this)">
+    <div class="proj-inner">
+      <div class="proj-face"><div class="proj-num">05 · This Website</div><span class="proj-emoji">🔄</span><div class="proj-name">IT2310 Portfolio</div><div class="proj-tagline">"The Ouroboros Project"</div><div class="proj-impact">HTML5 · CSS3 · JS · 5 Easter eggs · pure chaos</div><div class="proj-hint">[ click to flip ]</div></div>
+      <div class="proj-face proj-back"><div class="proj-back-title">THE REAL STORY</div><div class="proj-back-text">A portfolio about making portfolios. You're looking at it. It has Easter eggs. There are 5 hidden ★. A Konami code. A secret word. A resume you can throw. Have fun.</div></div>
+    </div>
+  </div>
+</div>`,
+
+education: `
+<div class="panel-stage">STAGE 05 · ACHIEVEMENTS UNLOCKED</div>
+<h2 class="panel-title">EDUCATION &amp; <span class="red">CERTS</span></h2>
+<div class="edu-card">
+  <div class="edu-label">Degree</div>
+  <div class="edu-name">A.A.S. in Information Technology</div>
+  <div class="edu-school">Cuyahoga Community College (Tri-C) · Cleveland, OH · Expected May 2026</div>
+</div>
+<div class="panel-stage" style="margin-bottom:.75rem;">Certifications</div>
+<div class="certs-row">
+  <span class="cert-badge">☁️ AWS ML Specialty</span>
+  <span class="cert-badge">🧠 GCP Professional ML Engineer</span>
+  <span class="cert-badge">🔷 Azure AI Engineer Associate</span>
+  <span class="cert-badge">📘 Deep Learning Specialization</span>
+</div>`,
+
+labs: `
+<div class="panel-stage">STAGE 06 · MISSION LOG</div>
+<h2 class="panel-title">IT2310 <span class="red">LABS</span></h2>
+<p class="panel-sub">// all coursework from IT2310 — click Open to launch</p>
+<span class="secret-star" data-star="5" style="position:relative;display:inline-block;margin-bottom:1rem;"></span>
+<div class="labs-grid">
+  <div class="lab-card"><div class="lab-card-top"><span class="lab-num">Lab 01</span><a href="lab1-intro.html" target="_blank" class="lab-open">Open ↗</a></div><div class="lab-bg-art" style="font-size:2rem;">🌐</div><div class="lab-title">My First Web Page</div><div class="lab-desc">HTML, headings, and a dream. Every career starts somewhere.</div><div class="lab-chips"><span class="lab-chip">HTML5</span><span class="lab-chip">Semantic Elements</span></div></div>
+  <div class="lab-card"><div class="lab-card-top"><span class="lab-num">Lab 02</span><a href="lab2-home.html" target="_blank" class="lab-open">Open ↗</a></div><div class="lab-bg-art" style="font-size:2rem;">🗂</div><div class="lab-title">Navigation &amp; Tables</div><div class="lab-desc">Multi-page sites + HTML tables. Foundation of every data dashboard.</div><div class="lab-chips"><span class="lab-chip">HTML Navigation</span><span class="lab-chip">Tables</span></div></div>
+  <div class="lab-card"><div class="lab-card-top"><span class="lab-num">Lab 03</span><a href="lab3-forms.html" target="_blank" class="lab-open">Open ↗</a></div><div class="lab-bg-art" style="font-size:2rem;">☕</div><div class="lab-title">Coffee Order Form</div><div class="lab-desc">Forms, dropdowns, checkboxes. I still order a dark roast every morning.</div><div class="lab-chips"><span class="lab-chip">HTML Forms</span><span class="lab-chip">Input Types</span></div></div>
+  <div class="lab-card"><div class="lab-card-top"><span class="lab-num">Lab 04</span><a href="lab4.html" target="_blank" class="lab-open">Open ↗</a></div><div class="lab-bg-art">CSS</div><div class="lab-title">CSS Fundamentals</div><div class="lab-desc">The day I linked an external stylesheet and everything transformed.</div><div class="lab-chips"><span class="lab-chip">CSS</span><span class="lab-chip">Selectors</span></div></div>
+  <div class="lab-card"><div class="lab-card-top"><span class="lab-num">Lab 05</span><a href="lab5-text.html" target="_blank" class="lab-open">Open ↗</a></div><div class="lab-bg-art">Aa</div><div class="lab-title">Typography &amp; Text</div><div class="lab-desc">Typography is the #1 design decision. Everything else is secondary.</div><div class="lab-chips"><span class="lab-chip">Typography</span><span class="lab-chip">Font Properties</span></div></div>
+  <div class="lab-card"><div class="lab-card-top"><span class="lab-num">Lab 06</span><a href="lab6-boxmodel.html" target="_blank" class="lab-open">Open ↗</a></div><div class="lab-bg-art">□□</div><div class="lab-title">CSS Box Model</div><div class="lab-desc">Content → Padding → Border → Margin. Cannot be unlearned.</div><div class="lab-chips"><span class="lab-chip">Box Model</span><span class="lab-chip">Layout</span></div></div>
+  <div class="lab-card"><div class="lab-card-top"><span class="lab-num">Lab 07</span><a href="lab7-coffee.html" target="_blank" class="lab-open">Open ↗</a></div><div class="lab-bg-art">☕</div><div class="lab-title">Coffee Shop Website</div><div class="lab-desc">First time everything came together into something real.</div><div class="lab-chips"><span class="lab-chip">Full Website</span><span class="lab-chip">Flexbox</span></div></div>
+  <div class="lab-card"><div class="lab-card-top"><span class="lab-num">Lab 08</span><a href="lab8-javascript.html" target="_blank" class="lab-open">Open ↗</a></div><div class="lab-bg-art">JS</div><div class="lab-title">JavaScript</div><div class="lab-desc">DOM manipulation, events, functions — pages finally talked back.</div><div class="lab-chips"><span class="lab-chip">JavaScript</span><span class="lab-chip">DOM</span><span class="lab-chip">Events</span></div></div>
+  <div class="lab-card"><div class="lab-card-top"><span class="lab-num bonus">Bonus</span><a href="lab8-javascript_bonus.html" target="_blank" class="lab-open">Open ↗</a></div><div class="lab-bg-art" style="color:rgba(255,215,0,.05);">JS+</div><div class="lab-title">Advanced JS — Bonus</div><div class="lab-desc">Arrays, loops, conditionals. Always do the bonus. It's worth it.</div><div class="lab-chips"><span class="lab-chip">Advanced JS</span><span class="lab-chip">Arrays</span></div></div>
+  <div class="lab-card"><div class="lab-card-top"><span class="lab-num portfolio">Portfolio</span><a href="about.html" target="_blank" class="lab-open">View ↗</a></div><div class="lab-bg-art" style="color:rgba(100,180,255,.04);">Bio</div><div class="lab-title">About Page</div><div class="lab-desc">Full bio, education, contact. Where the portfolio journey began.</div><div class="lab-chips"><span class="lab-chip">Bio</span><span class="lab-chip">HTML + CSS</span></div></div>
+  <div class="lab-card"><div class="lab-card-top"><span class="lab-num portfolio">Portfolio</span><a href="portfolio.html" target="_blank" class="lab-open">View All ↗</a></div><div class="lab-bg-art" style="color:rgba(100,180,255,.04);">Labs</div><div class="lab-title">Portfolio Gallery</div><div class="lab-desc">All labs in one filterable view — HTML/CSS/JS categories.</div><div class="lab-chips"><span class="lab-chip">All Labs</span><span class="lab-chip">JS Filter</span></div></div>
+</div>`,
+
+contact: `
+<div class="panel-stage">STAGE 07 · SEND MESSAGE</div>
+<h2 class="panel-title">LET'S <span class="red">CONNECT</span></h2>
+<p class="panel-sub">// open to Senior AI Architect · Principal ML Engineer · Generative AI consulting<br>// cleveland, OH — remote preferred · open in 2026</p>
+<div class="contact-list">
+  <a href="mailto:andredonerson32@gmail.com" class="contact-item"><span class="c-ico">✉</span>andredonerson32@gmail.com</a>
+  <a href="tel:2162782046" class="contact-item"><span class="c-ico">📞</span>(216) 278-2046</a>
+  <a href="https://github.com/Stackinndre/-it2310-portfolio" target="_blank" class="contact-item"><span class="c-ico">⌥</span>github.com/Stackinndre/-it2310-portfolio</a>
+  <a href="https://linkedin.com/in/andredonerson" target="_blank" class="contact-item"><span class="c-ico">in</span>linkedin.com/in/andredonerson</a>
+  <div class="contact-item"><span class="c-ico">📍</span>Cleveland, OH · Open to Remote</div>
+</div>
+<div class="contact-btns">
+  <a href="mailto:andredonerson32@gmail.com" class="btn-p">Send Email</a>
+  <a href="contact.html" class="btn-o">Contact Form</a>
+</div>`
+
+};
+
+
+// ─── 1. BOOT SEQUENCE ───────────────────────────────────────────
+const BOOT_LINES = [
+  { t:'ANDRE.EXE v2026.3.0',                                    ms:0,    c:'w' },
+  { t:'> loading neural_network.js .............. [OK]',         ms:200        },
+  { t:'> loading easter_eggs.js ................. [OK]',         ms:420        },
+  { t:'> loading portfolio_content.json ......... [OK]',         ms:640        },
+  { t:'> calibrating resume-throw physics ....... [OK]',         ms:880        },
+  { t:'> mounting: 10 years experience .......... [OK]',         ms:1080       },
+  { t:'> mounting: Tri-C A.A.S. IT .............. [OK]',         ms:1280       },
+  { t:'> scanning for bugs ...................... [WARN]',        ms:1480, c:'y'},
+  { t:'WARNING: 5 Easter eggs detected. Proceed?',               ms:1700, c:'y'},
+  { t:'> user clicked yes (you had no choice) ... [OK]',         ms:2000       },
+  { t:'> launching ANDRE.EXE ....................',              ms:2200, c:'w'},
+];
+const $bootLines = document.getElementById('boot-lines');
+const $boot      = document.getElementById('boot');
+const $scene     = document.getElementById('game-scene');
+let maxMs = 0;
+BOOT_LINES.forEach(({ t, ms, c }) => {
+  setTimeout(() => {
+    const el = document.createElement('div');
+    el.className = 'boot-line' + (c ? ' ' + c : '');
+    el.textContent = t;
+    $bootLines.appendChild(el);
+  }, ms);
+  maxMs = Math.max(maxMs, ms);
+});
+setTimeout(() => {
+  $boot.classList.add('done');
+  $scene.classList.add('on');
+  initInteractives();
+}, maxMs + 650);
+
+
+// ─── 2. CURSOR ──────────────────────────────────────────────────
+const $cur  = document.getElementById('cursor');
+const $ring = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => {
+  mx=e.clientX; my=e.clientY;
+  $cur.style.left=mx+'px'; $cur.style.top=my+'px';
+});
+(function rl() {
+  rx += (mx-rx)*0.13; ry += (my-ry)*0.13;
+  $ring.style.left=rx+'px'; $ring.style.top=ry+'px';
+  requestAnimationFrame(rl);
+})();
+function hoverOn()  { document.body.classList.add('hovering'); }
+function hoverOff() { document.body.classList.remove('hovering'); }
+
+
+// ─── 3. CLICK BURST ─────────────────────────────────────────────
+const SYMS   = ['★','✦','✧','◆','▲','●','✺','⚡'];
+const COLORS = ['#ff3232','#ffd60a','#00f5ff','#bf5af2','#39ff14','#ff6b6b'];
+document.addEventListener('click', e => {
+  if (e.target.closest('#konami,#overlay')) return;
+  for (let i=0;i<7;i++) {
+    const p=document.createElement('div');
+    p.className='burst'; p.textContent=SYMS[Math.floor(Math.random()*SYMS.length)];
+    p.style.left=e.clientX+'px'; p.style.top=e.clientY+'px';
+    p.style.color=COLORS[Math.floor(Math.random()*COLORS.length)];
+    const ang=(i/7)*Math.PI*2+(Math.random()-.5)*.8;
+    const dst=50+Math.random()*90;
+    p.style.setProperty('--dx',Math.cos(ang)*dst+'px');
+    p.style.setProperty('--dy',Math.sin(ang)*dst+'px');
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),900);
+  }
+});
+
+
+// ─── 4. THROW MECHANIC ──────────────────────────────────────────
+// Press & hold fills power gauge → release sends resume flying
+const $andre      = document.getElementById('andre');
+const $laptop     = document.getElementById('laptop');
+const $resume     = document.getElementById('resume');
+const $throwBtn   = document.getElementById('throw-btn');
+const $powerFill  = document.getElementById('power-fill');
+const $scoreEl    = document.getElementById('score-el');
+const $scorePop   = document.getElementById('score-popup');
+const $hired      = document.getElementById('hired-announce');
+const $miss       = document.getElementById('miss-text');
+
+let gameScore = 0;
+let power = 0;
+let charging = false;
+let chargeInterval = null;
+let throwing = false;
+
+function setEnemyState(s) {
+  $laptop.className = 'character-enemy state-' + s;
+}
+
+function startCharge(e) {
+  e.preventDefault();
+  if (throwing) return;
+  charging = true;
+  power = 0;
+  $throwBtn.classList.add('active');
+  setAndreState('windup');
+  setEnemyState('move');
+  clearInterval(chargeInterval);
+  chargeInterval = setInterval(() => {
+    power = Math.min(100, power + 2.5);
+    $powerFill.style.height = power + '%';
+    if (power >= 100) releaseCharge();
+  }, 40);
+}
+
+function releaseCharge() {
+  if (!charging) return;
+  charging = false;
+  clearInterval(chargeInterval);
+  $throwBtn.classList.remove('active');
+  if (power < 2) { setAndreState('idle'); $powerFill.style.height='0%'; return; }
+  throwResume();
+}
+
+function throwResume() {
+  throwing = true;
+  setAndreState('throw');
+  const thrownPower = power;  // capture before reset
+  power = 0;
+  $powerFill.style.height = '0%';
+
+  const aRect = $andre.getBoundingClientRect();
+  const lRect = $laptop.getBoundingClientRect();
+  const startX = aRect.right - 10;
+  const startY = aRect.top + aRect.height * 0.3;
+  const endX   = lRect.left + lRect.width * 0.5;
+  const endY   = lRect.top  + lRect.height * 0.45;
+  const midX   = (startX + endX) / 2;
+  const midY   = Math.min(startY, endY) - 55;
+
+  $resume.style.opacity = '1';
+  const anim = $resume.animate([
+    { transform:`translate(${startX}px,${startY}px) rotate(0deg) scale(1)`,   opacity:1 },
+    { transform:`translate(${midX}px,${midY}px) rotate(300deg) scale(.9)`,    opacity:1 },
+    { transform:`translate(${endX}px,${endY}px) rotate(680deg) scale(.65)`,   opacity:.4 },
+  ], { duration:600, easing:'ease-in' });
+
+  anim.onfinish = () => {
+    $resume.style.opacity = '0';
+    const isBull = thrownPower >= 85;
+    const isHit  = thrownPower >= 35;
+    onThrowResult(isBull, isHit, endX, endY, thrownPower);
+    setTimeout(() => { throwing = false; setAndreState('idle'); }, 900);
+  };
+}
+
+function onThrowResult(bull, hit, x, y, thrownPower) {
+  if (bull) {
+    gameScore += 10;
+    showScorePopup('+10', x, y);
+    showAnnounce($hired, '2.2s');
+    setAndreState('celebrate');
+    setEnemyState('defeat');
+    setTimeout(() => setEnemyState('idle'), 900);
+    toast('🎯 BULLSEYE!', 'HIRED! +10 PTS. Andre is going places.');
+  } else if (hit) {
+    const pts = Math.round(3 + (thrownPower / 85) * 4);
+    gameScore += pts;
+    showScorePopup(`+${pts}`, x, y);
+    setAndreState('celebrate');
+    setEnemyState('defeat');
+    setTimeout(() => setEnemyState('idle'), 700);
+  } else {
+    showAnnounce($miss, '1.4s');
+    setAndreState('miss');
+    setEnemyState('attack');
+    setTimeout(() => setEnemyState('idle'), 700);
+    gameScore = Math.max(0, gameScore - 1);
+    // Lose a heart on miss
+    loseHeart();
+  }
+  $scoreEl.textContent = gameScore;
+}
+
+let heartsRemaining = 3;
+function loseHeart() {
+  if (heartsRemaining <= 0) return;
+  heartsRemaining--;
+  const h = document.getElementById('heart-' + (heartsRemaining + 1));
+  if (h) h.classList.add('lost');
+  if (heartsRemaining === 0) {
+    setTimeout(() => {
+      // Restore all hearts after 2s
+      heartsRemaining = 3;
+      document.querySelectorAll('.heart').forEach(h => h.classList.remove('lost'));
+    }, 2000);
+  }
+}
+
+function showScorePopup(txt, x, y) {
+  $scorePop.textContent = txt;
+  $scorePop.style.left  = x + 'px';
+  $scorePop.style.top   = y + 'px';
+  $scorePop.classList.remove('pop');
+  void $scorePop.offsetWidth; // reflow
+  $scorePop.classList.add('pop');
+  setTimeout(() => $scorePop.classList.remove('pop'), 1200);
+}
+
+function showAnnounce(el, dur) {
+  el.classList.remove('show');
+  void el.offsetWidth;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), parseFloat(dur) * 1000);
+}
+
+function setAndreState(s) {
+  $andre.className = 'character-andre state-' + s;
+}
+
+// Bind throw button
+$throwBtn.addEventListener('mousedown',  startCharge);
+$throwBtn.addEventListener('touchstart', startCharge, { passive:false });
+document.addEventListener('mouseup',  () => { if (charging) releaseCharge(); });
+document.addEventListener('touchend', () => { if (charging) releaseCharge(); });
+
+
+// ─── 5. CONTENT OVERLAY ─────────────────────────────────────────
+// Riley: project-overlay + project-panel
+const $overlay    = document.getElementById('overlay');
+const $panelBody  = document.getElementById('panel-body');
+const $arrowLeft  = document.getElementById('arrow-left');
+const $arrowRight = document.getElementById('arrow-right');
+const $panelClose = document.getElementById('panel-close');
+let currentPanel  = null;
+
+function openPanel(key) {
+  currentPanel = PANEL_ORDER.indexOf(key);
+  if (currentPanel < 0) return;
+  renderPanel(currentPanel);
+  $overlay.classList.remove('off');
+  void $overlay.offsetWidth;
+  $overlay.classList.add('show');
+  document.querySelectorAll('.nav-link').forEach(a => {
+    a.classList.toggle('active', a.dataset.panel === key);
+  });
+  // Sync level-nav radio dots
+  document.querySelectorAll('.level-radio').forEach(d => {
+    d.classList.toggle('active', d.dataset.panel === key);
+  });
+}
+
+function closePanel() {
+  $overlay.classList.remove('show');
+  setTimeout(() => $overlay.classList.add('off'), 300);
+  document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
+  // Reset dots to first (skills)
+  document.querySelectorAll('.level-radio').forEach(d => {
+    d.classList.toggle('active', d.dataset.panel === 'skills');
+  });
+  currentPanel = null;
+}
+
+function renderPanel(idx) {
+  const key = PANEL_ORDER[idx];
+  $panelBody.innerHTML = PANELS[key];
+  $panelBody.scrollTop = 0;
+  // Update arrows (Riley: project-nav-arrow hidden state)
+  $arrowLeft.classList.toggle('hidden',  idx === 0);
+  $arrowRight.classList.toggle('hidden', idx === PANEL_ORDER.length - 1);
+  // Sync nav link + level-nav dot active states
+  document.querySelectorAll('.nav-link').forEach(a => a.classList.toggle('active', a.dataset.panel === key));
+  document.querySelectorAll('.level-radio').forEach(d => d.classList.toggle('active', d.dataset.panel === key));
+  // Init panel interactions
+  setTimeout(() => {
+    initChips();
+    initStatBars();
+    initPanelStars();
+    initInteractivesInPanel();
+  }, 50);
+}
+
+$arrowLeft.addEventListener('click', () => {
+  if (currentPanel > 0) { currentPanel--; renderPanel(currentPanel); }
+});
+$arrowRight.addEventListener('click', () => {
+  if (currentPanel < PANEL_ORDER.length-1) { currentPanel++; renderPanel(currentPanel); }
+});
+$panelClose.addEventListener('click', closePanel);
+$overlay.addEventListener('click', e => { if (e.target === $overlay) closePanel(); });
+
+// Bind all nav links and side-stuff links
+function bindNavLinks() {
+  document.querySelectorAll('[data-panel]').forEach(el => {
+    el.addEventListener('click', e => {
+      e.preventDefault();
+      openPanel(el.dataset.panel);
+    });
+    el.addEventListener('mouseenter', hoverOn);
+    el.addEventListener('mouseleave', hoverOff);
+  });
+}
+
+
+// ─── 6. CHIP TOOLTIPS ───────────────────────────────────────────
+const $chipTip = document.getElementById('chip-tip');
+let chipTimer;
+
+function initChips() {
+  document.querySelectorAll('.chip[data-tip]').forEach(chip => {
+    chip.addEventListener('mouseenter', e => {
+      clearTimeout(chipTimer);
+      $chipTip.textContent = chip.dataset.tip;
+      $chipTip.style.left  = (e.clientX + 14) + 'px';
+      $chipTip.style.top   = (e.clientY - 10) + 'px';
+      $chipTip.classList.add('show');
+    });
+    chip.addEventListener('mousemove', e => {
+      $chipTip.style.left = (e.clientX + 14) + 'px';
+      $chipTip.style.top  = (e.clientY - 10) + 'px';
+    });
+    chip.addEventListener('mouseleave', () => {
+      chipTimer = setTimeout(() => $chipTip.classList.remove('show'), 300);
+    });
+  });
+}
+
+
+// ─── 7. STAT BARS ───────────────────────────────────────────────
+function initStatBars() {
+  setTimeout(() => {
+    document.querySelectorAll('.stat-fill[data-w]').forEach(bar => {
+      bar.style.width = bar.dataset.w + '%';
+    });
+  }, 120);
+}
+
+
+// ─── 8. FLIP CARDS ──────────────────────────────────────────────
+let flippedCards = 0;
+function flipCard(wrap) {
+  const wasFlipped = wrap.classList.contains('flipped');
+  wrap.classList.toggle('flipped');
+  if (!wasFlipped) {
+    gameScore += 25; $scoreEl.textContent = gameScore;
+    flippedCards++;
+    if (flippedCards === 5) toast('🃏 CARD MASTER', 'All 5 project cards flipped. +25 PTS each.');
+  }
+}
+
+
+// ─── 9. SECRET STARS ────────────────────────────────────────────
+let starsFound = 0;
+
+function initPanelStars() {
+  document.querySelectorAll('#panel-body .secret-star').forEach(initStar);
+}
+function initStar(star) {
+  star.addEventListener('mouseenter', hoverOn);
+  star.addEventListener('mouseleave', hoverOff);
+  star.addEventListener('click', e => {
+    e.stopPropagation();
+    if (star.classList.contains('found')) return;
+    star.classList.add('found');
+    starsFound++;
+    gameScore += 100; $scoreEl.textContent = gameScore;
+    burstAt(e.clientX, e.clientY, '★', '#ffd60a', 12);
+    const left = 5 - starsFound;
+    toast(`⭐ STAR ${starsFound}/5 FOUND`, left > 0 ? `${left} more hidden on this page…` : '🏆 ALL 5 FOUND! Legend.');
+  });
+}
+// Scene stars
+document.querySelectorAll('#game-scene .secret-star').forEach(star => {
+  star.addEventListener('mouseenter', hoverOn);
+  star.addEventListener('mouseleave', hoverOff);
+  star.addEventListener('click', e => {
+    e.stopPropagation();
+    if (star.classList.contains('found')) return;
+    star.classList.add('found');
+    starsFound++;
+    gameScore += 100; $scoreEl.textContent = gameScore;
+    burstAt(e.clientX, e.clientY, '★', '#ffd60a', 12);
+    const left = 5 - starsFound;
+    toast(`⭐ STAR ${starsFound}/5 FOUND`, left > 0 ? `${left} more hidden somewhere…` : '🏆 ALL 5 FOUND! Legend.');
+  });
+});
+
+function burstAt(x, y, sym, col, n) {
+  for (let i=0;i<n;i++) {
+    const p=document.createElement('div'); p.className='burst'; p.textContent=sym;
+    p.style.cssText=`left:${x}px;top:${y}px;color:${col};font-size:1.2rem;`;
+    const a=(i/n)*Math.PI*2; const d=40+Math.random()*60;
+    p.style.setProperty('--dx',Math.cos(a)*d+'px');
+    p.style.setProperty('--dy',Math.sin(a)*d+'px');
+    document.body.appendChild(p); setTimeout(()=>p.remove(),950);
+  }
+}
+
+
+// ─── 10. KONAMI CODE ────────────────────────────────────────────
+const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let ki = 0;
+document.addEventListener('keydown', e => {
+  ki = (e.key===KONAMI[ki]) ? ki+1 : (e.key===KONAMI[0] ? 1 : 0);
+  if (ki===KONAMI.length) { ki=0; launchKonami(); }
+  checkWord(e.key);
+  if (e.key==='Escape') { closeKonami(); closePanel(); }
+});
+const $konami  = document.getElementById('konami');
+const $confBox = document.getElementById('confetti-box');
+function launchKonami() {
+  $konami.classList.add('show');
+  gameScore += 500; $scoreEl.textContent = gameScore;
+  $confBox.innerHTML = '';
+  const cols = ['#ff3232','#ffd60a','#00f5ff','#bf5af2','#39ff14','#ff6b6b','#fff'];
+  for (let i=0;i<70;i++) {
+    const p=document.createElement('div'); p.className='cp';
+    const s=5+Math.random()*9;
+    p.style.cssText=`left:${Math.random()*100}vw;width:${s}px;height:${s}px;background:${cols[Math.floor(Math.random()*cols.length)]};border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${2+Math.random()*3}s;animation-delay:${Math.random()*1.5}s;`;
+    $confBox.appendChild(p);
+  }
+  toast('🎮 KONAMI CODE!', '↑↑↓↓←→←→BA — +500 PTS. Nice moves.');
+}
+function closeKonami() { $konami.classList.remove('show'); }
+
+
+// ─── 11. SECRET WORD: "coffee" ──────────────────────────────────
+let wordBuf = '';
+function checkWord(key) {
+  if (key.length > 1) { wordBuf=''; return; }
+  wordBuf = (wordBuf+key).slice(-6).toLowerCase();
+  if (wordBuf !== 'coffee') return;
+  wordBuf = '';
+  gameScore += 200; $scoreEl.textContent = gameScore;
+  for (let i=0;i<22;i++) {
+    setTimeout(() => {
+      const p=document.createElement('div'); p.className='burst'; p.textContent='☕';
+      p.style.cssText=`left:${Math.random()*window.innerWidth}px;top:0px;font-size:${1+Math.random()}rem;animation-duration:${1.8+Math.random()}s;`;
+      p.style.setProperty('--dx',(Math.random()-.5)*120+'px');
+      p.style.setProperty('--dy',window.innerHeight+80+'px');
+      document.body.appendChild(p); setTimeout(()=>p.remove(),2200);
+    }, i*70);
+  }
+  toast('☕ COFFEE DETECTED', '+200 PTS. Andre runs on this. The whole site does too.');
+}
+
+
+// ─── 12. ACHIEVEMENT TOAST ──────────────────────────────────────
+const $toast      = document.getElementById('toast');
+const $toastTitle = document.getElementById('toast-title');
+const $toastText  = document.getElementById('toast-text');
+let toastTimer;
+function toast(title, text) {
+  clearTimeout(toastTimer);
+  $toastTitle.textContent = title;
+  $toastText.textContent  = text;
+  $toast.classList.add('show');
+  toastTimer = setTimeout(() => $toast.classList.remove('show'), 4200);
+}
+
+
+// ─── 13. RAGE DETECTOR ──────────────────────────────────────────
+let moves = [];
+document.addEventListener('mousemove', e => {
+  const now = Date.now();
+  moves.push({ x:e.clientX, y:e.clientY, t:now });
+  moves = moves.filter(m => now-m.t < 250);
+  if (moves.length < 14) return;
+  let d=0;
+  for (let i=1;i<moves.length;i++) d += Math.hypot(moves[i].x-moves[i-1].x, moves[i].y-moves[i-1].y);
+  if (d > 1100) {
+    moves = [];
+    document.body.style.animation = 'shake .4s ease';
+    setTimeout(() => document.body.style.animation='', 450);
+    toast('😤 EASY THERE', 'The mouse did nothing wrong. (Or did it?)');
+  }
+});
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `@keyframes shake{0%,100%{transform:translate(0,0)}15%{transform:translate(-5px,-2px) rotate(-1deg)}30%{transform:translate(5px,2px) rotate(1deg)}45%{transform:translate(-4px,3px)}60%{transform:translate(4px,-3px) rotate(1deg)}75%{transform:translate(-3px,2px) rotate(-1deg)}90%{transform:translate(3px,-1px)}}`;
+document.head.appendChild(shakeStyle);
+
+
+// ─── 14. MOBILE NAV ─────────────────────────────────────────────
+function closeMob() { document.getElementById('mob-menu').classList.remove('open'); }
+
+
+// ─── 15. INIT (runs after boot) ─────────────────────────────────
+function initInteractives() {
+  bindNavLinks();
+  // Hover states for throw button and characters
+  [$throwBtn, $andre, $laptop].forEach(el => {
+    el.addEventListener('mouseenter', hoverOn);
+    el.addEventListener('mouseleave', hoverOff);
+  });
+  document.querySelectorAll('.side-stuff-list a').forEach(el => {
+    el.addEventListener('mouseenter', hoverOn);
+    el.addEventListener('mouseleave', hoverOff);
+  });
+  document.querySelectorAll('.secret-star').forEach(el => {
+    el.addEventListener('mouseenter', hoverOn);
+    el.addEventListener('mouseleave', hoverOff);
+  });
+  document.querySelectorAll('.level-radio').forEach(el => {
+    el.addEventListener('mouseenter', hoverOn);
+    el.addEventListener('mouseleave', hoverOff);
+  });
+}
+
+function initInteractivesInPanel() {
+  document.querySelectorAll('#panel-body a, #panel-body button, #panel-body .chip, #panel-body .proj-wrap, #panel-body .lab-card, #panel-body .exp-card, #panel-body .cert-badge').forEach(el => {
+    el.addEventListener('mouseenter', hoverOn);
+    el.addEventListener('mouseleave', hoverOff);
+  });
+}
+
+</script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>
